@@ -45,11 +45,8 @@ namespace MultiFive.Web.Controllers.Lobby
 
         private ActionResult OAuthCallback()
         {
-            // TODO: fix F5
-            var auth = AuthClient.ProcessUserAuthorization(this.Request);
+            var auth = (Session["auth"] as IAuthorizationState) ?? AuthClient.ProcessUserAuthorization(this.Request);
             Session["auth"] = auth;
-
-            //[…]
 
             var google = new GoogleProxy();
 
