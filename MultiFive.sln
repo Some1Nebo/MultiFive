@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Domain", "MultiFive.Domain\MultiFive.Domain.csproj", "{7FA5FBF0-F0AB-4CC7-B9B1-E3F2589C0320}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Common", "MultiFive.Common\MultiFive.Common.csproj", "{5BD7774F-D711-4BF0-8AC5-7A10D6DA07FF}"
@@ -9,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Domain.Tests", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Common.Tests", "MultiFive.Common.Tests\MultiFive.Common.Tests.csproj", "{78A47FE6-25F8-45BE-8CBB-C07A0BD0F93B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Web.Tests", "MultiFive.Web.Tests\MultiFive.Web.Tests.csproj", "{3DBDD160-3DD5-4AF3-885A-CF01EC2345CC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2D621DD4-7315-43DA-BF04-92B49ABF0D0A}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -18,7 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2D621D
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Web", "MultiFive.Web\MultiFive.Web.csproj", "{375D9C72-30C6-4245-B999-53B1ED0316B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Web", "MultiFive.Web\MultiFive.Web.csproj", "{4B1C4BBB-14A7-4421-BFF6-53A0C10AD09C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFive.Web.Tests", "MultiFive.Web.Tests\MultiFive.Web.Tests.csproj", "{ED68C21F-FF6D-4276-B5E8-C3CDEB8E5E9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,14 +44,14 @@ Global
 		{78A47FE6-25F8-45BE-8CBB-C07A0BD0F93B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78A47FE6-25F8-45BE-8CBB-C07A0BD0F93B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78A47FE6-25F8-45BE-8CBB-C07A0BD0F93B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3DBDD160-3DD5-4AF3-885A-CF01EC2345CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DBDD160-3DD5-4AF3-885A-CF01EC2345CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DBDD160-3DD5-4AF3-885A-CF01EC2345CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3DBDD160-3DD5-4AF3-885A-CF01EC2345CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{375D9C72-30C6-4245-B999-53B1ED0316B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{375D9C72-30C6-4245-B999-53B1ED0316B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{375D9C72-30C6-4245-B999-53B1ED0316B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{375D9C72-30C6-4245-B999-53B1ED0316B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B1C4BBB-14A7-4421-BFF6-53A0C10AD09C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B1C4BBB-14A7-4421-BFF6-53A0C10AD09C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B1C4BBB-14A7-4421-BFF6-53A0C10AD09C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B1C4BBB-14A7-4421-BFF6-53A0C10AD09C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED68C21F-FF6D-4276-B5E8-C3CDEB8E5E9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED68C21F-FF6D-4276-B5E8-C3CDEB8E5E9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED68C21F-FF6D-4276-B5E8-C3CDEB8E5E9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED68C21F-FF6D-4276-B5E8-C3CDEB8E5E9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
