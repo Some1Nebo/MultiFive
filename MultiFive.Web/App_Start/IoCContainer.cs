@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
+using MultiFive.Web.Models;
 
 namespace MultiFive.Web
 {
@@ -12,6 +13,7 @@ namespace MultiFive.Web
             var builder = new ContainerBuilder();
 
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterType<ApplicationDbContext>().As<IRepository>().InstancePerHttpRequest();
 
             /* sample use: 
             builder.RegisterType<AuthorRepository>().As<IAuthorRepository>().InstancePerLifetimeScope();

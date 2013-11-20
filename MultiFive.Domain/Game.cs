@@ -8,6 +8,10 @@ namespace MultiFive.Domain
 {
     public class Game
     {
+        private Game()
+        {
+        }
+
         public Game(Player player1)
         {
             if (player1 == null) 

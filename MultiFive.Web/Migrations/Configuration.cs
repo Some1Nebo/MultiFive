@@ -1,3 +1,8 @@
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using MultiFive.Domain;
+using MultiFive.Web.Models;
+
 namespace MultiFive.Web.Migrations
 {
     using System;
@@ -14,18 +19,26 @@ namespace MultiFive.Web.Migrations
 
         protected override void Seed(MultiFive.Web.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var store = new UserStore<ApplicationUser>(context);
+            var manager = new UserManager<ApplicationUser>(store);
+            AddTestUser(context, manager, "test1");
+            AddTestUser(context, manager, "test2");
+        }
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+        private void AddTestUser(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string userName)
+        {
+            if (!context.Users.Any(u => u.UserName == userName))
+            {
+                var testPlayer = context.Players.Create();
+                context.Players.Add(testPlayer);
+
+                var user = new ApplicationUser(testPlayer)
+                {
+                    UserName = userName,
+                };
+
+                userManager.Create(user, "password");
+            }
         }
     }
 }

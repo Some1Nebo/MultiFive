@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
+using MultiFive.Domain;
 using MultiFive.Web.Models;
 
 namespace MultiFive.Web.Controllers
@@ -15,9 +16,12 @@ namespace MultiFive.Web.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        public AccountController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+        private readonly IRepository _repository;
+
+        public AccountController(IRepository repository)
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(repository as ApplicationDbContext)))
         {
+            _repository = repository;
         }
 
         public AccountController(UserManager<ApplicationUser> userManager)
@@ -78,7 +82,7 @@ namespace MultiFive.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.UserName };
+                var user = new ApplicationUser(CreatePlayer()) { UserName = model.UserName };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -265,7 +269,7 @@ namespace MultiFive.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser() { UserName = model.UserName };
+                var user = new ApplicationUser(CreatePlayer()) { UserName = model.UserName };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -404,5 +408,11 @@ namespace MultiFive.Web.Controllers
             }
         }
         #endregion
+
+        private Player CreatePlayer()
+        {
+            var player = _repository.CreatePlayer();
+            return player;
+        }
     }
 }

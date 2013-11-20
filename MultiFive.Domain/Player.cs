@@ -2,6 +2,10 @@
 {
     public class Player
     {
+        private Player()
+        {
+        }
+
         public Player(int id)
         {
             Id = id;
