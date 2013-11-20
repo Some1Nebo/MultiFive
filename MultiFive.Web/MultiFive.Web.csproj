@@ -199,9 +199,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201311150559521_InitialCreate.cs" />
-    <Compile Include="Migrations\201311150559521_InitialCreate.Designer.cs">
-      <DependentUpon>201311150559521_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201311200629544_GamesAndPlayers.cs" />
+    <Compile Include="Migrations\201311200629544_GamesAndPlayers.Designer.cs">
+      <DependentUpon>201311200629544_GamesAndPlayers.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -276,8 +276,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201311150559521_InitialCreate.resx">
-      <DependentUpon>201311150559521_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201311200629544_GamesAndPlayers.resx">
+      <DependentUpon>201311200629544_GamesAndPlayers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -7,13 +7,13 @@ namespace MultiFive.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.0.1-21010")]
-    public sealed partial class InitialCreate : IMigrationMetadata
+    public sealed partial class GamesAndPlayers : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(GamesAndPlayers));
         
         string IMigrationMetadata.Id
         {
-            get { return "201311150559521_InitialCreate"; }
+            get { return "201311200629544_GamesAndPlayers"; }
         }
         
         string IMigrationMetadata.Source

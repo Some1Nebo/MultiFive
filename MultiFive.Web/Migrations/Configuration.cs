@@ -10,7 +10,6 @@ namespace MultiFive.Web.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "MultiFive.Web.Models.ApplicationDbContext";
         }
 
         protected override void Seed(MultiFive.Web.Models.ApplicationDbContext context)

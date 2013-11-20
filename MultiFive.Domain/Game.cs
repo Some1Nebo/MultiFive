@@ -8,41 +8,33 @@ namespace MultiFive.Domain
 {
     public class Game
     {
-        private readonly List<IPlayer> _players;
-
-        public Game(IPlayer startingPlayer)
+        public Game(Player player1)
         {
+            if (player1 == null) 
+                throw new NullReferenceException("player1 can't be null");
+
             Id = Guid.NewGuid();
-            Players = _players = new List<IPlayer> { startingPlayer };
+            Player1 = player1;
+            Player2 = null;
             CurrentPlayer = 0;
-            GameFull = _players.Count == MaxPlayers;
         }
 
-        public const int MaxPlayers = 2;
-        public Guid Id { get; private set; }
-        public IReadOnlyCollection<IPlayer> Players { get; private set; }
-        public int CurrentPlayer { get; private set; }
-
-        public void AddPlayer(IPlayer player)
+        public void Lock(Player player2)
         {
-            GameFull = _players.Count < MaxPlayers;
+            if (Player2 != null)
+                throw new InvalidOperationException("Game is already locked to two players");
 
-            if (!GameFull)
-            {
-                _players.Add(player);
-            }
-            else
-            {
-                string msg = string.Format("Can't add player. Game already has {0}.", MaxPlayers);
-                throw new ArgumentException(msg);
-            }
+            Player2 = player2;
         }
 
-        public bool GameFull { get; private set; }
-    }
+        public void Move()
+        {
+            CurrentPlayer = (CurrentPlayer + 1)%2;
+        }
 
-    public interface IPlayer
-    {
-        string Id { get; }
+        public Guid Id { get; private set; }
+        public Player Player1 { get; private set; }
+        public Player Player2 { get; private set; }
+        public int CurrentPlayer { get; private set; }
     }
 }
