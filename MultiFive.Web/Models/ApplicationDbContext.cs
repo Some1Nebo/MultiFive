@@ -8,7 +8,7 @@ namespace MultiFive.Web.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IRepository
     {
         public ApplicationDbContext()
-            : base("DefaultConnection")
+            : base("MultiFiveDb")
         {
         }
 
