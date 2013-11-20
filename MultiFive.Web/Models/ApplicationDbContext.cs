@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using System.Data.Entity;
+using System.Linq;
+using Microsoft.AspNet.Identity.EntityFramework;
+using MultiFive.Domain;
 
 namespace MultiFive.Web.Models
 {
@@ -9,5 +12,6 @@ namespace MultiFive.Web.Models
         {
         }
 
+        public IDbSet<Game> Games { get; set; }
     }
 }
