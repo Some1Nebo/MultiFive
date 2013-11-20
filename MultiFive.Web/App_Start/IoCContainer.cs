@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
@@ -11,7 +13,7 @@ namespace MultiFive.Web
         public static void Configure()
         {
             var builder = new ContainerBuilder();
-
+            
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<ApplicationDbContext>().As<IRepository>().InstancePerHttpRequest();
 
