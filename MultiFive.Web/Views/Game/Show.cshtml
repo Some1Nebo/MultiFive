@@ -1,0 +1,18 @@
+﻿@model MultiFive.Domain.Game
+
+@{
+    ViewBag.Title = "Game "+@Model.Id;
+}
+
+<h2>Game @Model.Id</h2>
+
+<h4>Players:</h4>
+
+<ol>
+    <li>
+        @Model.Player1
+    </li>
+    <li>
+        @Model.Player2
+    </li>
+</ol>

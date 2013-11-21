@@ -14,6 +14,12 @@ namespace MultiFive.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Game",
+                url: "{gameId}",
+                defaults: new {controller = "Game", action = "Show"});
+                
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }

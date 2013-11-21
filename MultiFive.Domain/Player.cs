@@ -12,5 +12,10 @@
         }
 
         public int Id { get; private set; }
+
+        public override string ToString()
+        {
+            return "Player " + Id;
+        }
     }
 }

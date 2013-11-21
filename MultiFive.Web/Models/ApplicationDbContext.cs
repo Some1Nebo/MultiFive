@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using Microsoft.AspNet.Identity.EntityFramework;
 using MultiFive.Domain;
@@ -32,7 +33,7 @@ namespace MultiFive.Web.Models
 
         Game IRepository.CreateGame(Player player1)
         {
-            var game = Games.Create();
+            var game = new Game(player1);
             return Games.Add(game);
         }
 
@@ -40,6 +41,25 @@ namespace MultiFive.Web.Models
         {
             var player = Players.Create();
             return Players.Add(player);
+        }
+
+        Player IRepository.FindPlayer(string userId)
+        {
+            var user = Users.Include(u => u.Player).FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                string msg = string.Format("User with id {0} not found in the db.", userId);
+                throw new ApplicationException(msg);
+            }
+
+            if (user.Player == null)
+            {
+                string msg = string.Format("This shouldn't happen. Player associated with user {0} not found.");
+                throw new ApplicationException(msg);
+            }
+
+            return user.Player;
         }
     }
 }
