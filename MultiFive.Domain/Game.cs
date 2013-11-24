@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiFive.Domain
 {
@@ -15,7 +11,7 @@ namespace MultiFive.Domain
         public Game(Player player1)
         {
             if (player1 == null) 
-                throw new NullReferenceException("player1 can't be null");
+                throw new ArgumentNullException("player1");
 
             Id = Guid.NewGuid();
             Player1 = player1;

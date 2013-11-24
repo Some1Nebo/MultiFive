@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\GameControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +99,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiFive.Domain\MultiFive.Domain.csproj">
+      <Project>{7fa5fbf0-f0ab-4cc7-b9b1-e3f2589c0320}</Project>
+      <Name>MultiFive.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiFive.Web\MultiFive.Web.csproj">
       <Project>{4B1C4BBB-14A7-4421-BFF6-53A0C10AD09C}</Project>
       <Name>MultiFive.Web</Name>

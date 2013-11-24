@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Security.Principal;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using MultiFive.Domain;
-using MultiFive.Web.Models;
+using MultiFive.Web.DataAccess;
 
 namespace MultiFive.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IPrincipal _user; 
         private readonly IRepository _repository;
 
-        public HomeController(IRepository repository)
+        public HomeController(IPrincipal user, IRepository repository)
         {
+            _user = user; 
             _repository = repository;
         }
 
@@ -41,8 +39,9 @@ namespace MultiFive.Web.Controllers
         [Authorize]
         public ActionResult CreateGame()
         {
-            string userId = User.Identity.GetUserId();
+            string userId = _user.Identity.GetUserId();
             Player player = _repository.FindPlayer(userId);
+
             return RedirectToAction("Create", "Game", new { creatingPlayerId = player.Id });
         }
     }
