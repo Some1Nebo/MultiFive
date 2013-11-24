@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using MultiFive.Domain;
 using MultiFive.Web.Controllers;
@@ -11,6 +9,8 @@ using MultiFive.Web.DataAccess;
 using MultiFive.Web.Models.Messaging;
 using NSubstitute;
 using NUnit.Framework;
+
+using Should.Fluent;
 
 namespace MultiFive.Web.Tests.Controllers
 {
@@ -69,8 +69,8 @@ namespace MultiFive.Web.Tests.Controllers
             var result = (ViewResult)controller.Show(gameId);
 
             // Assert 
-            Assert.AreEqual("AlreadyFull", result.ViewName);
-            Assert.AreEqual(gameId, result.Model);
+            result.ViewName.Should().Equal("AlreadyFull");
+            result.Model.Should().Equal(gameId); 
         }
 
         [Test]
@@ -86,9 +86,8 @@ namespace MultiFive.Web.Tests.Controllers
             var result = (ViewResult)controller.Show(gameId); 
 
             //Assert
-            Assert.AreEqual(string.Empty, result.ViewName);
-            Assert.AreEqual(gameId, ((Game)result.Model).Id); 
-
+            result.ViewName.Should().Equal(string.Empty);
+            ((Game)result.Model).Id.Should().Equal(gameId); 
         }
 
         [Test]
@@ -104,8 +103,8 @@ namespace MultiFive.Web.Tests.Controllers
             var result = (ViewResult)controller.Show(gameId);
 
             //Assert
-            Assert.AreEqual(string.Empty, result.ViewName);
-            Assert.AreEqual(gameId, ((Game)result.Model).Id);
+            result.ViewName.Should().Equal(string.Empty);
+            ((Game)result.Model).Id.Should().Equal(gameId); 
         }
 
         [Test]
@@ -122,9 +121,10 @@ namespace MultiFive.Web.Tests.Controllers
             var result = (ViewResult)controller.Show(unlockedGame.Id);
 
             // Assert
-            Assert.AreEqual(string.Empty, result.ViewName);
-            Assert.AreEqual(unlockedGame.Id, ((Game)result.Model).Id);
-            Assert.AreEqual(player2.Id, unlockedGame.Player2.Id);
+            result.ViewName.Should().Equal(string.Empty);
+            ((Game)result.Model).Id.Should().Equal(unlockedGame.Id);
+            unlockedGame.Player2.Id.Should().Equal(player2.Id);
+
             repository.Received().AddMessage(Arg.Any<Message>());
             repository.Received().Save(); 
         }
