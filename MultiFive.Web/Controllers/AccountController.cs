@@ -15,8 +15,8 @@ namespace MultiFive.Web.Controllers
     {
         private readonly IRepository _repository;
 
-        public AccountController(IRepository repository)
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(repository as ApplicationDbContext)))
+        public AccountController(IRepository repository, ApplicationDbContext dbContext)
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext)))
         {
             _repository = repository;
         }
