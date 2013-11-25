@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
@@ -50,7 +51,7 @@ namespace MultiFive.Web.Controllers
                 {
                     game.Lock(player);
 
-                    var message = _messageFactory.CreateJoinedMessage(gameId, player.Id);
+                    var message = _messageFactory.CreateJoinedMessage(gameId, game.Player1.Id);
                     _repository.AddMessage(message);
 
                     _repository.Save(); 
@@ -68,11 +69,21 @@ namespace MultiFive.Web.Controllers
         }
 
         [AjaxOnly]
-        public JsonResult Ping(Guid gameId)
+        public ContentResult Ping(int playerId, Guid gameId)
         {
-            // todo: returns json array of messages
+            var jsonMessages = _repository.Messages
+                .Where(m => m.ReceiverId == playerId
+                            && m.GameId == gameId
+                            && m.Status != Status.Fulfilled)
+                .OrderBy(m => m.CreationTime)
+                .Select(m => m.JsonContent)
+                .ToList();
 
-            throw new NotImplementedException(); 
+            return new ContentResult
+            {
+                Content = JoinJsonStrings(jsonMessages), 
+                ContentType = "application/json"
+            };
         }
 
         [AjaxOnly]
@@ -95,6 +106,14 @@ namespace MultiFive.Web.Controllers
             }
 
             return game; 
+        }
+
+        private string JoinJsonStrings(List<string> jsonMessages)
+        {
+            string result = jsonMessages
+                .Aggregate("[", (current, jsonMessage) => current + jsonMessage + ",", str => str.TrimEnd(',') + "]");
+
+            return result; 
         }
 	}
 }

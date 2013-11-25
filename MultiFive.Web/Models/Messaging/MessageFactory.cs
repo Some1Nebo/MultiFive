@@ -13,7 +13,7 @@ namespace MultiFive.Web.Models.Messaging
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public Message CreateJoinedMessage(Guid gameId, int senderId)
+        public Message CreateJoinedMessage(Guid gameId, int receiverId)
         {
             var content = new
             {
@@ -24,7 +24,7 @@ namespace MultiFive.Web.Models.Messaging
             var jsonSerializer = new JavaScriptSerializer();
             var jsonContent = jsonSerializer.Serialize(content);
 
-            return new Message(gameId, senderId, jsonContent, _dateTimeProvider.Now);
+            return new Message(gameId, receiverId, jsonContent, _dateTimeProvider.Now);
         }
     }
 }

@@ -217,6 +217,10 @@
     <Compile Include="Migrations\201311240833297_Messages.Designer.cs">
       <DependentUpon>201311240833297_Messages.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201311251225266_MessagesReceiverInsteadOfSender.cs" />
+    <Compile Include="Migrations\201311251225266_MessagesReceiverInsteadOfSender.Designer.cs">
+      <DependentUpon>201311251225266_MessagesReceiverInsteadOfSender.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
@@ -305,6 +309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201311240833297_Messages.resx">
       <DependentUpon>201311240833297_Messages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311251225266_MessagesReceiverInsteadOfSender.resx">
+      <DependentUpon>201311251225266_MessagesReceiverInsteadOfSender.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
