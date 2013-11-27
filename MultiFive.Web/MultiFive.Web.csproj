@@ -203,6 +203,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\DataAccessExtensions.cs" />
     <Compile Include="Infrastructure\DateTimeProvider.cs" />
     <Compile Include="Infrastructure\IDateTimeProvider.cs" />
     <Compile Include="Migrations\201311200629544_GamesAndPlayers.cs" />

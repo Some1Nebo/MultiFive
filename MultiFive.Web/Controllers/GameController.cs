@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using MultiFive.Domain;
 using MultiFive.Web.Controllers.Attributes;
 using MultiFive.Web.DataAccess;
+using MultiFive.Web.Infrastructure;
 using MultiFive.Web.Models.Messaging;
 
 namespace MultiFive.Web.Controllers
@@ -15,6 +16,7 @@ namespace MultiFive.Web.Controllers
     public class GameController : Controller
     {
         private readonly IPrincipal _user;
+        private readonly Player _player;
         private readonly IRepository _repository;
         private readonly IMessageFactory _messageFactory; 
 
@@ -22,16 +24,14 @@ namespace MultiFive.Web.Controllers
         {
             _user = user;
             _repository = repository;
-            _messageFactory = messageFactory; 
+            _messageFactory = messageFactory;
+            _player = _repository.FindPlayer(_user);
         }
         
         [Authorize]
         public ActionResult Create(int creatingPlayerId)
         {
-            string userId = _user.Identity.GetUserId();
-            Player player = _repository.FindPlayer(userId);
-
-            var game = _repository.CreateGame(player);
+            var game = _repository.CreateGame(_player);
             _repository.Save();
 
             return RedirectToRoute("Game", new {gameId = game.Id});
@@ -40,16 +40,13 @@ namespace MultiFive.Web.Controllers
         [Authorize]
         public ActionResult Show(Guid gameId)
         {
-            string userId = _user.Identity.GetUserId();
-            Player player = _repository.FindPlayer(userId);
-
             var game = GetGame(gameId);
 
             if (game.Player2 == null)
             {
-                if (player.Id != game.Player1.Id)
+                if (_player.Id != game.Player1.Id)
                 {
-                    game.Lock(player);
+                    game.Lock(_player);
 
                     var message = _messageFactory.CreateJoinedMessage(gameId, game.Player1.Id);
                     _repository.AddMessage(message);
@@ -60,7 +57,7 @@ namespace MultiFive.Web.Controllers
                 return View(game);
             }
 
-            if (player.Id != game.Player1.Id && player.Id != game.Player2.Id)
+            if (_player.Id != game.Player1.Id && _player.Id != game.Player2.Id)
             {
                 return View("AlreadyFull", gameId);
             }
@@ -68,11 +65,14 @@ namespace MultiFive.Web.Controllers
             return View(game);
         }
 
-        [AjaxOnly]
-        public ContentResult Ping(int playerId, Guid gameId)
+        // TODO: add non-authorized behavior for Poll action,
+        // i.e. messages sent to all subscribers (playerId = -1?)
+
+        [Authorize]
+        public ContentResult Poll(Guid gameId)
         {
             var jsonMessages = _repository.Messages
-                .Where(m => m.ReceiverId == playerId
+                .Where(m => m.ReceiverId == _player.Id
                             && m.GameId == gameId
                             && m.Status != Status.Fulfilled)
                 .OrderBy(m => m.CreationTime)
@@ -86,7 +86,7 @@ namespace MultiFive.Web.Controllers
             };
         }
 
-        [AjaxOnly]
+        [Authorize]
         public JsonResult Move()
         {
             throw new NotImplementedException(); 
@@ -110,10 +110,7 @@ namespace MultiFive.Web.Controllers
 
         private string JoinJsonStrings(List<string> jsonMessages)
         {
-            string result = jsonMessages
-                .Aggregate("[", (current, jsonMessage) => current + jsonMessage + ",", str => str.TrimEnd(',') + "]");
-
-            return result; 
+            return "[" + string.Join(",", jsonMessages) + "]";
         }
 	}
 }

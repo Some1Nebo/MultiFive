@@ -17,7 +17,6 @@ namespace MultiFive.Web.Tests.Controllers
     [TestFixture]
     public class GameControllerTests
     {
-        private GameController controller;
         private IRepository repository;
         private IPrincipal user;
         private IMessageFactory messageFactory; 
@@ -32,11 +31,11 @@ namespace MultiFive.Web.Tests.Controllers
         public void Setup()
         {
             user = Substitute.For<IPrincipal>();
+            user.Identity.IsAuthenticated.Returns(true);
+
             repository = Substitute.For<IRepository>();
             repository.Games.Returns(new List<Game>().AsQueryable());
             messageFactory = Substitute.For<IMessageFactory>(); 
-
-            controller = new GameController(user, repository, messageFactory);
 
             player1 = new Player(1);
             player2 = new Player(2);
@@ -49,11 +48,13 @@ namespace MultiFive.Web.Tests.Controllers
         }
 
         [Test]
-        [ExpectedException(typeof(ApplicationException))]
         public void Show_unknown_gameId_throws_ApplicationException()
         {
+            // Arrange
+            var controller = new GameController(user, repository, messageFactory);
+
             // Act 
-            controller.Show(Guid.NewGuid()); 
+            Assert.Throws<ApplicationException>(() => controller.Show(Guid.NewGuid())); 
         }
 
         [Test]
@@ -63,7 +64,9 @@ namespace MultiFive.Web.Tests.Controllers
             var games = new List<Game> { lockedGame }.AsQueryable(); 
 
             repository.Games.Returns(games);
-            repository.FindPlayer(Arg.Any<string>()).Returns(player3); 
+            repository.FindPlayer(Arg.Any<string>()).Returns(player3);
+
+            var controller = new GameController(user, repository, messageFactory);
 
             // Act 
             var result = (ViewResult)controller.Show(gameId);
@@ -80,7 +83,9 @@ namespace MultiFive.Web.Tests.Controllers
             var games = new List<Game> { lockedGame }.AsQueryable();
 
             repository.Games.Returns(games);
-            repository.FindPlayer(Arg.Any<string>()).Returns(player1); 
+            repository.FindPlayer(Arg.Any<string>()).Returns(player1);
+
+            var controller = new GameController(user, repository, messageFactory);
 
             // Act
             var result = (ViewResult)controller.Show(gameId); 
@@ -99,6 +104,8 @@ namespace MultiFive.Web.Tests.Controllers
             repository.Games.Returns(games);
             repository.FindPlayer(Arg.Any<string>()).Returns(player2);
 
+            var controller = new GameController(user, repository, messageFactory);
+
             // Act
             var result = (ViewResult)controller.Show(gameId);
 
@@ -116,6 +123,8 @@ namespace MultiFive.Web.Tests.Controllers
 
             repository.Games.Returns(games);
             repository.FindPlayer(Arg.Any<string>()).Returns(player2);
+
+            var controller = new GameController(user, repository, messageFactory);
 
             // Act
             var result = (ViewResult)controller.Show(unlockedGame.Id);

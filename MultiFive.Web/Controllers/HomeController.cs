@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using MultiFive.Domain;
 using MultiFive.Web.DataAccess;
+using MultiFive.Web.Infrastructure;
 
 namespace MultiFive.Web.Controllers
 {
@@ -39,8 +40,7 @@ namespace MultiFive.Web.Controllers
         [Authorize]
         public ActionResult CreateGame()
         {
-            string userId = _user.Identity.GetUserId();
-            Player player = _repository.FindPlayer(userId);
+            var player = _repository.FindPlayer(_user);
 
             return RedirectToAction("Create", "Game", new { creatingPlayerId = player.Id });
         }

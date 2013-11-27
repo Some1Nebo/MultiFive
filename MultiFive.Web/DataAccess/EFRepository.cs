@@ -61,7 +61,7 @@ namespace MultiFive.Web.DataAccess
 
             if (user.Player == null)
             {
-                string msg = string.Format("This shouldn't happen. Player associated with user {0} not found.");
+                string msg = string.Format("This shouldn't happen. Player associated with user {0} not found.", userId);
                 throw new ApplicationException(msg);
             }
 
