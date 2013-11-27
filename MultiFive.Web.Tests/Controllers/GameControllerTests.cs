@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
@@ -153,7 +152,7 @@ namespace MultiFive.Web.Tests.Controllers
             var dateTimeProvider = Substitute.For<IDateTimeProvider>();
             var messageFactory = new MessageFactory(dateTimeProvider);
 
-            List<Message> messages = new List<Message>();
+            var messages = new List<Message>();
             repository.AddMessage(Arg.Do<Message>(messages.Add));
             repository.Messages.Returns( messages.AsQueryable() );
 

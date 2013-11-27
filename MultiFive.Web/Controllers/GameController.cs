@@ -1,33 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
-using System.Web.Http.Results;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
 using MultiFive.Domain;
-using MultiFive.Web.Controllers.Attributes;
 using MultiFive.Web.DataAccess;
 using MultiFive.Web.Infrastructure;
 using MultiFive.Web.Models.Messaging;
-using System.Web.Helpers;
 
 namespace MultiFive.Web.Controllers
 {
     public class GameController : Controller
     {
-        private readonly IPrincipal _user;
         private readonly Player _player;
         private readonly IRepository _repository;
         private readonly IMessageFactory _messageFactory; 
 
         public GameController(IPrincipal user, IRepository repository, IMessageFactory messageFactory)
         {
-            _user = user;
             _repository = repository;
             _messageFactory = messageFactory;
-            _player = _repository.FindPlayer(_user);
+            _player = _repository.FindPlayer(user);
         }
         
         [Authorize]
@@ -80,10 +73,7 @@ namespace MultiFive.Web.Controllers
                 .OrderBy(m => m.CreationTime)
                 .ToList();
 
-            foreach (var msg in messages)
-            {
-                msg.Status = Status.Fulfilled;
-            }
+            messages.ForEach(m => m.Status = Status.Fulfilled);
 
             _repository.Save();
 

@@ -8,7 +8,7 @@ namespace MultiFive.Web.Models.Messaging
         {
         }
 
-        public Message(Guid gameId, int receiverId, string jsonContent,  DateTime creationTime)
+        public Message(Guid gameId, int receiverId, string jsonContent, DateTime creationTime)
         {
             if (string.IsNullOrEmpty(jsonContent))
                 throw new ArgumentNullException("jsonContent"); 
@@ -27,7 +27,7 @@ namespace MultiFive.Web.Models.Messaging
         public int ReceiverId { get; private set; }
         public string JsonContent { get; private set; }
 
-        public DateTime CreationTime { get; private set; }
         public Status Status { get; set; }
+        public DateTime CreationTime { get; private set; }
     }       
 }
