@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
+using System.Web.Http.Results;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using MultiFive.Domain;
@@ -10,6 +11,7 @@ using MultiFive.Web.Controllers.Attributes;
 using MultiFive.Web.DataAccess;
 using MultiFive.Web.Infrastructure;
 using MultiFive.Web.Models.Messaging;
+using System.Web.Helpers;
 
 namespace MultiFive.Web.Controllers
 {
@@ -65,25 +67,29 @@ namespace MultiFive.Web.Controllers
             return View(game);
         }
 
-        // TODO: add non-authorized behavior for Poll action,
-        // i.e. messages sent to all subscribers (playerId = -1?)
-
         [Authorize]
-        public ContentResult Poll(Guid gameId)
+        public JsonResult Poll(Guid gameId)
         {
-            var jsonMessages = _repository.Messages
+            // TODO: add non-authorized behavior for Poll action,
+            // i.e. messages sent to all subscribers (playerId = -1?)
+
+            var messages = _repository.Messages
                 .Where(m => m.ReceiverId == _player.Id
                             && m.GameId == gameId
                             && m.Status != Status.Fulfilled)
                 .OrderBy(m => m.CreationTime)
-                .Select(m => m.JsonContent)
                 .ToList();
 
-            return new ContentResult
+            foreach (var msg in messages)
             {
-                Content = JoinJsonStrings(jsonMessages), 
-                ContentType = "application/json"
-            };
+                msg.Status = Status.Fulfilled;
+            }
+
+            _repository.Save();
+
+            var jsonMessages = messages.Select(m => m.JsonContent).ToList();
+            
+            return Json(jsonMessages, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
@@ -106,11 +112,6 @@ namespace MultiFive.Web.Controllers
             }
 
             return game; 
-        }
-
-        private string JoinJsonStrings(List<string> jsonMessages)
-        {
-            return "[" + string.Join(",", jsonMessages) + "]";
         }
 	}
 }

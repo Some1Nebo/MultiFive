@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Web.Script.Serialization;
+using System.Web.Helpers;
 using MultiFive.Web.Infrastructure;
 
 namespace MultiFive.Web.Models.Messaging
@@ -21,10 +21,7 @@ namespace MultiFive.Web.Models.Messaging
                 messageData = new { gameId }
             };
 
-            var jsonSerializer = new JavaScriptSerializer();
-            var jsonContent = jsonSerializer.Serialize(content);
-
-            return new Message(gameId, receiverId, jsonContent, _dateTimeProvider.Now);
+            return new Message(gameId, receiverId, Json.Encode(content), _dateTimeProvider.Now);
         }
     }
 }

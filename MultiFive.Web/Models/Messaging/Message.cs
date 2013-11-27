@@ -28,6 +28,6 @@ namespace MultiFive.Web.Models.Messaging
         public string JsonContent { get; private set; }
 
         public DateTime CreationTime { get; private set; }
-        public Status Status { get; private set; }
+        public Status Status { get; set; }
     }       
 }
