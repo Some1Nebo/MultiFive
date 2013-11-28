@@ -13,15 +13,15 @@ namespace MultiFive.Web.Models.Messaging
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public Message CreateJoinedMessage(Guid gameId, int receiverId)
+        public Message CreateMessage<T>(Guid gameId, int receiverId, string messageName, T messageData)
         {
-            var content = new
+            var message = new
             {
-                messageName = "joined",
-                messageData = new { gameId }
+                messageName,
+                messageData
             };
 
-            return new Message(gameId, receiverId, Json.Encode(content), _dateTimeProvider.Now);
+            return new Message(gameId, receiverId, Json.Encode(message), _dateTimeProvider.Now);
         }
     }
 }

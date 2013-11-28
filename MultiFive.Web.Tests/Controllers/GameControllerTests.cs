@@ -167,11 +167,10 @@ namespace MultiFive.Web.Tests.Controllers
             var pollResult = controller1.Poll(game.Id);
 
             // Assert
-            Func<dynamic, dynamic> extractMessage = data => Json.Decode(data[0]);
-            var message = extractMessage(pollResult.Data);
+            var jsonMessages = Json.Decode(pollResult.Content);
 
-            Assert.AreEqual("joined", message.messageName);
-            Assert.AreEqual(game.Id.ToString(), message.messageData.gameId);
+            Assert.AreEqual("joined", jsonMessages[0].messageName);
+            Assert.AreEqual(game.Id.ToString(), jsonMessages[0].messageData.gameId);
         }
     }
 }

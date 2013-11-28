@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
+using Newtonsoft.Json;
+using WebHelpers = System.Web.Helpers;
 using MultiFive.Domain;
 using MultiFive.Web.DataAccess;
 using MultiFive.Web.Infrastructure;
@@ -43,7 +46,10 @@ namespace MultiFive.Web.Controllers
                 {
                     game.Lock(_player);
 
-                    var message = _messageFactory.CreateJoinedMessage(gameId, game.Player1.Id);
+                    var playerName = string.Format("Player {0}", _player.Id);
+
+                    var message = _messageFactory.CreateMessage(gameId, game.Player1.Id, "joined", new {playerName});
+
                     _repository.AddMessage(message);
 
                     _repository.Save(); 
@@ -61,7 +67,7 @@ namespace MultiFive.Web.Controllers
         }
 
         [Authorize]
-        public JsonResult Poll(Guid gameId)
+        public ContentResult Poll(Guid gameId)
         {
             // TODO: add non-authorized behavior for Poll action,
             // i.e. messages sent to all subscribers (playerId = -1?)
@@ -77,9 +83,13 @@ namespace MultiFive.Web.Controllers
 
             _repository.Save();
 
-            var jsonMessages = messages.Select(m => m.JsonContent).ToList();
-            
-            return Json(jsonMessages, JsonRequestBehavior.AllowGet);
+            var jsonMessages = messages.Select(m => m.JsonContent);
+
+            return new ContentResult
+            {
+                Content = "["+string.Join(",", jsonMessages) + "]",
+                ContentType = "application/json"
+            };
         }
 
         [Authorize]
