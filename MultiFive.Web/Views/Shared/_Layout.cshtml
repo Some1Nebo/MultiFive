@@ -39,5 +39,16 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    
+    <script>
+        $(function() {
+            if (typeof (init) != "undefined") {
+                init({
+                    @RenderSection("init_codebehind", required: false)
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>

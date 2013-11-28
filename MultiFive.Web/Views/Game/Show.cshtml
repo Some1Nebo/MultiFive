@@ -9,21 +9,24 @@
 <h4>Players:</h4>
 
 <ol>
-    <li id="p1">
-        @Model.Player1
+    <li>
+        <span data-bind="text: player1Name"/>
     </li>
-    <li id="p2">
-        @Model.Player2
-        <span data-bind="text: opponentName"></span> 
+    <li>
+        <span data-bind="text: player2Name"/>
     </li>
 </ol>
 
+@section init_codebehind
+{
+    player1Name: "@Model.Player1",
+    player2Name: "@Model.Player2",
+    gameId: "@Model.Id"
+}
+
 @section scripts
 {
-    <script>
-        var gameId = "@Html.Raw(Model.Id)";
-    </script>
-    
     @Scripts.Render("~/bundles/knockout")
-    @Scripts.Render("~/bundles/client")
+    @Scripts.Render("~/bundles/messageHub")
+    @Scripts.Render("~/bundles/show")
 }

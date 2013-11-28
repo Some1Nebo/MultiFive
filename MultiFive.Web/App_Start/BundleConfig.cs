@@ -17,8 +17,11 @@ namespace MultiFive.Web
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
                 "~/Scripts/knockout-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/client").Include(
-               "~/Scripts/client.js"));
+            bundles.Add(new ScriptBundle("~/bundles/messageHub").Include(
+               "~/Scripts/messageHub.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/show").Include(
+               "~/Scripts/show/*.js"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
