@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
-using Newtonsoft.Json;
 using WebHelpers = System.Web.Helpers;
 using MultiFive.Domain;
 using MultiFive.Web.DataAccess;
@@ -48,7 +46,7 @@ namespace MultiFive.Web.Controllers
 
                     var playerName = string.Format("Player {0}", _player.Id);
 
-                    var message = _messageFactory.CreateMessage(gameId, game.Player1.Id, "joined", new {playerName});
+                    var message = _messageFactory.CreateJoinedMessage(gameId, playerName, game.Player1.Id);
 
                     _repository.AddMessage(message);
 

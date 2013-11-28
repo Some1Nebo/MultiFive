@@ -1,7 +1,7 @@
 ﻿@model MultiFive.Domain.Game
 
 @{
-    ViewBag.Title = "Game "+@Model.Id;
+    ViewBag.Title = "Game " + @Model.Id;
 }
 
 <h2>Game @Model.Id</h2>
@@ -14,67 +14,16 @@
     </li>
     <li id="p2">
         @Model.Player2
+        <span data-bind="text: opponentName"></span> 
     </li>
 </ol>
 
 @section scripts
 {
     <script>
-        // TODO: move to codebehind
-        
-        var serverHooks = {
-
-            joined: function (messageData) {
-                $("#p2").text(messageData.playerName);
-            }
-
-        };
-        
-        function pollServer() {
-
-            console.log("polling server...");
-
-            var id = "@Model.Id";
-
-            $.ajax({
-                url: "game/poll",
-                data: {
-                    gameId: id,
-                },
-            }).success(function(messages) {
-
-                console.log("poll successful. returned object:");
-                console.log(messages);
-                dispatchMessages(messages);
-
-            }).error(function(xhr, textStatus, errorThrown) {
-
-                console.log(textStatus);
-                console.log(errorThrown);
-
-            });
-        }
-
-        function dispatchMessages(messages) {
-
-            messages.forEach(function(m) {
-
-                var serverHook = serverHooks[m.messageName];
-
-                if (serverHook) {
-                    console.log("invoking hooked function for ", m.messageName, "...");
-                    serverHook(m.messageData);
-                } else {
-                    console.error("hook for ", m.messageName, " not found.");
-                }
-
-            });
-
-        }
-
-        var interval = 5; // seconds
-
-        setInterval(pollServer, interval * 1000);
-
+        var gameId = "@Html.Raw(Model.Id)";
     </script>
+    
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/client")
 }
