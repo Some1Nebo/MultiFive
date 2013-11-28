@@ -23,4 +23,6 @@ function init(data) {
 
     };
 
+    messageHub.listen();
+
 }

@@ -46,7 +46,9 @@
 
     }
 
-    var interval = 5; // seconds
-    setInterval(pollServer, interval * 1000);
-    
+    self.listen = function (interval) {
+        interval = interval || 5;  // seconds
+        setInterval(pollServer, interval * 1000);
+    };
+
 }
