@@ -10,7 +10,8 @@ namespace MultiFive.Web.DataAccess
 {
     public class EFRepository: IRepository
     {
-        private readonly ApplicationDbContext _dbContext; 
+        private readonly ApplicationDbContext _dbContext;
+        private static readonly object SyncRoot = new object();
 
         public EFRepository(ApplicationDbContext dbContext)
         {
@@ -77,11 +78,9 @@ namespace MultiFive.Web.DataAccess
 
         public IReadOnlyCollection<Message> PollMessages(Guid gameId, int receiverId)
         {
-            List<Message> messages;
-
-            using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.Serializable))
+            lock (SyncRoot)
             {
-                messages = Messages
+                List<Message> messages = Messages
                     .Where(m => m.ReceiverId == receiverId
                                 && m.GameId == gameId
                                 && m.Status != Status.Fulfilled)
@@ -92,10 +91,8 @@ namespace MultiFive.Web.DataAccess
 
                 _dbContext.SaveChanges();
 
-                transaction.Commit();
+                return messages;
             }
-
-            return messages;
         }
     }
 }
