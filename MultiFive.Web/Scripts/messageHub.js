@@ -11,12 +11,16 @@
 
         console.log("poll #", nPoll++, "...");
 
+        var nTry = 0;
+
         $.ajax({
             url: "game/poll",
             data: {
                 gameId: gameId
             }
         }).success(function (messages) {
+
+            console.log("success #", nTry++, "messages:", messages.length);
 
             if (messages.length > 0) {
                 console.log("poll successful. returned object:", messages);
