@@ -79,7 +79,7 @@ namespace MultiFive.Web.DataAccess
         {
             List<Message> messages;
 
-            using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.RepeatableRead))
+            using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.Serializable))
             {
                 messages = Messages
                     .Where(m => m.ReceiverId == receiverId
