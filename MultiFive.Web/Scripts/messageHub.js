@@ -5,7 +5,11 @@
     self.hooks = {
     };
 
+    var nPoll = 0;
+
     function pollServer() {
+
+        console.log("poll #", nPoll++, "...");
 
         $.ajax({
             url: "game/poll",
