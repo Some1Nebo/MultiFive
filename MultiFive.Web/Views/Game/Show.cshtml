@@ -17,11 +17,9 @@
     </li>
 </ol>
 
-@section init_codebehind
+@section codebehind
 {
-    player1Name: "@Model.Player1",
-    player2Name: "@Model.Player2",
-    gameId: "@Model.Id"
+    MultiFive.show("@Model.Id", "@Model.Player1", "@Model.Player2");
 }
 
 @section scripts

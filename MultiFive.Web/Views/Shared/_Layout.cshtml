@@ -42,11 +42,7 @@
     
     <script>
         $(function() {
-            if (typeof (init) != "undefined") {
-                init({
-                    @RenderSection("init_codebehind", required: false)
-                });
-            }
+            @RenderSection("codebehind", required: false)
         });
     </script>
 

@@ -47,7 +47,7 @@
     }
 
     self.listen = function (interval) {
-        interval = interval || 5;  // seconds
+        interval = interval || 1;  // seconds
         setInterval(pollServer, interval * 1000);
     };
 

@@ -1,28 +1,37 @@
 ﻿// codebehind script for /game/show
+// module pattern
 
-function ViewModel(player1Name, player2Name) {
- 
-    var self = this;
+var MultiFive = (function(ns) {
 
-    self.player1Name = ko.observable(player1Name);
-    self.player2Name = ko.observable(player2Name);
-    
-    return self;
-}
+    // TODO: Replace with non-ctor function?
+    function ViewModel(player1Name, player2Name) {
 
-function init(data) {
+        var self = this;
 
-    var viewModel = new ViewModel(data.player1Name, data.player2Name);
-    ko.applyBindings(viewModel);
-    
-    var messageHub = new MessageHub(data.gameId);
+        self.player1Name = ko.observable(player1Name);
+        self.player2Name = ko.observable(player2Name);
 
-    messageHub.hooks.joined = function(messageData) {
+        return self;
+        
+    }
 
-        viewModel.player2Name(messageData.senderName);
+    ns.show = function(gameId, player1Name, player2Name) {
+
+        var viewModel = new ViewModel(player1Name, player2Name);
+        ko.applyBindings(viewModel);
+
+        var messageHub = new MessageHub(gameId);
+
+        messageHub.hooks.joined = function(messageData) {
+
+            viewModel.player2Name(messageData.senderName);
+
+        };
+
+        messageHub.listen();
 
     };
 
-    messageHub.listen();
-
-}
+    return ns;
+    
+})(MultiFive || {});
