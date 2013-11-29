@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using MultiFive.Domain;
@@ -78,7 +79,7 @@ namespace MultiFive.Web.DataAccess
         {
             List<Message> messages;
 
-            using (var transaction = _dbContext.Database.BeginTransaction())
+            using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.RepeatableRead))
             {
                 messages = Messages
                     .Where(m => m.ReceiverId == receiverId
