@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MultiFive.Domain;
 using MultiFive.Web.Models.Messaging;
 
@@ -17,6 +19,7 @@ namespace MultiFive.Web.DataAccess
         
         Player FindPlayer(string userId);
 
-        void AddMessage(Message message); 
+        void AddMessage(Message message);
+        IReadOnlyCollection<Message> PollMessages(Guid gameId, int receiverId);
     }
 }

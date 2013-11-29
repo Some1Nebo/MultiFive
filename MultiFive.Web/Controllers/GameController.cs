@@ -67,19 +67,7 @@ namespace MultiFive.Web.Controllers
         [Authorize]
         public ContentResult Poll(Guid gameId)
         {
-            // TODO: add non-authorized behavior for Poll action,
-            // i.e. messages sent to all subscribers (playerId = -1?)
-
-            var messages = _repository.Messages
-                .Where(m => m.ReceiverId == _player.Id
-                            && m.GameId == gameId
-                            && m.Status != Status.Fulfilled)
-                .OrderBy(m => m.CreationTime)
-                .ToList();
-
-            messages.ForEach(m => m.Status = Status.Fulfilled);
-
-            _repository.Save();
+            var messages = _repository.PollMessages(gameId, _player.Id);
 
             var jsonMessages = messages.Select(m => m.JsonContent);
 

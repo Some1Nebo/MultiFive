@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using MultiFive.Domain;
@@ -71,6 +72,29 @@ namespace MultiFive.Web.DataAccess
         public void AddMessage(Message message)
         {
             _dbContext.Messages.Add(message); 
+        }
+
+        public IReadOnlyCollection<Message> PollMessages(Guid gameId, int receiverId)
+        {
+            List<Message> messages;
+
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                messages = Messages
+                    .Where(m => m.ReceiverId == receiverId
+                                && m.GameId == gameId
+                                && m.Status != Status.Fulfilled)
+                    .OrderBy(m => m.CreationTime)
+                    .ToList();
+
+                messages.ForEach(m => m.Status = Status.Fulfilled);
+
+                _dbContext.SaveChanges();
+
+                transaction.Commit();
+            }
+
+            return messages;
         }
     }
 }
