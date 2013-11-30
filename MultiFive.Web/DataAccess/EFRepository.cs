@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using MultiFive.Domain;
 using MultiFive.Web.Models.Messaging;
 
@@ -11,7 +13,13 @@ namespace MultiFive.Web.DataAccess
     public class EFRepository: IRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private static readonly object SyncRoot = new object();
+        private static readonly object SyncRoot;
+
+        static EFRepository()
+        {
+            SyncRoot = new object();
+            Trace.WriteLine("EFRepository static ctor");
+        }
 
         public EFRepository(ApplicationDbContext dbContext)
         {
@@ -88,6 +96,9 @@ namespace MultiFive.Web.DataAccess
                     .ToList();
 
                 messages.ForEach(m => m.Status = Status.Fulfilled);
+
+                if (messages.Count > 0)
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
 
                 _dbContext.SaveChanges();
 

@@ -3,16 +3,9 @@
 
 var MultiFive = (function(ns) {
 
-    // TODO: Replace with non-ctor function?
     function ViewModel(player1Name, player2Name) {
-
-        var self = this;
-
-        self.player1Name = ko.observable(player1Name);
-        self.player2Name = ko.observable(player2Name);
-
-        return self;
-        
+        this.player1Name = ko.observable(player1Name);
+        this.player2Name = ko.observable(player2Name);
     }
 
     ns.show = function(gameId, player1Name, player2Name) {
