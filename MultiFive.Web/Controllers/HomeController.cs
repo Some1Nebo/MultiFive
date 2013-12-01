@@ -1,9 +1,6 @@
 ﻿using System.Security.Principal;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using MultiFive.Domain;
 using MultiFive.Web.DataAccess;
-using MultiFive.Web.Infrastructure;
 
 namespace MultiFive.Web.Controllers
 {

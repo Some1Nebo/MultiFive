@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
-using System.Web;
 using System.Web.Mvc;
 using MultiFive.Domain;
 using MultiFive.Web.DataAccess;
-using MultiFive.Web.Models.Messaging;
 
 namespace MultiFive.Web.Controllers
 {
@@ -34,7 +31,7 @@ namespace MultiFive.Web.Controllers
                 id = m.Id,
                 name = m.Name,
                 content = m.Content
-            }).ToList();
+            }).ToArray();
 
             return Json(jsonMessages, JsonRequestBehavior.AllowGet);
         }
