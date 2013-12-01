@@ -18,11 +18,13 @@ namespace MultiFive.Web.Tests.Controllers
         public void Poll_for_creating_player_should_return_join_message_when_game_is_locked()
         {
             // Arrange
+            const int width = 100;
+            const int height = 50; 
             var user = Substitute.For<IPrincipal>();
             user.Identity.IsAuthenticated.Returns(true);
             var player1 = new Player(1);
             var player2 = new Player(2);
-            var game = new Game(player1);
+            var game = new Game(width, height, player1);
             var games = new List<Game> { game }.AsQueryable();
 
             var repository = Substitute.For<IRepository>(); 

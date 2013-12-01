@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using MultiFive.Domain;
 using MultiFive.Web.Models.Messaging;
 
@@ -39,9 +36,9 @@ namespace MultiFive.Web.DataAccess
             _dbContext.SaveChanges();
         }
 
-        public Game CreateGame(Player player1)
+        public Game CreateGame(int width, int height, Player player1)
         {
-            var game = new Game(player1);
+            var game = new Game(width, height, player1);
 
             return _dbContext.Games.Add(game);
         }

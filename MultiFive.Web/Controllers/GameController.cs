@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using WebHelpers = System.Web.Helpers;
 using MultiFive.Domain;
 using MultiFive.Web.DataAccess;
-using MultiFive.Web.Infrastructure;
 using MultiFive.Web.Models.Messaging;
 
 namespace MultiFive.Web.Controllers
@@ -15,7 +14,10 @@ namespace MultiFive.Web.Controllers
     {
         private readonly Player _player;
         private readonly IRepository _repository;
-        private readonly IMessageFactory _messageFactory; 
+        private readonly IMessageFactory _messageFactory;
+
+        private const int DefaultWidth = 10;
+        private const int DefaultHeight = 10; 
 
         public GameController(IPrincipal user, IRepository repository, IMessageFactory messageFactory)
         {
@@ -27,7 +29,7 @@ namespace MultiFive.Web.Controllers
         [Authorize]
         public ActionResult Create(int creatingPlayerId)
         {
-            var game = _repository.CreateGame(_player);
+            var game = _repository.CreateGame(DefaultWidth, DefaultHeight, _player);
             _repository.Save();
 
             return RedirectToRoute("Game", new {gameId = game.Id});

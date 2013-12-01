@@ -17,6 +17,9 @@ namespace MultiFive.Web.Tests.Controllers
     [TestFixture]
     public class GameControllerTests
     {
+        const int Width = 100;
+        const int Height = 50; 
+
         private IRepository repository;
         private IPrincipal user;
         private IMessageFactory messageFactory; 
@@ -40,8 +43,8 @@ namespace MultiFive.Web.Tests.Controllers
             player1 = new Player(1);
             player2 = new Player(2);
             player3 = new Player(3);
-
-            lockedGame = new Game(player1);
+            
+            lockedGame = new Game(Width, Height, player1);
             lockedGame.Lock(player2);
 
             gameId = lockedGame.Id; 
@@ -118,7 +121,7 @@ namespace MultiFive.Web.Tests.Controllers
         public void Show_if_game_unlocked_locks_the_game_creates_joined_message_and_returns_game_view()
         {
             // Arrange
-            var unlockedGame = new Game(player1);
+            var unlockedGame = new Game(Width, Height, player1);
             var games = new List<Game> { unlockedGame }.AsQueryable();
 
             repository.Games.Returns(games);

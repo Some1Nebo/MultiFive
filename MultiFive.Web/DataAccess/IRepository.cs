@@ -14,7 +14,7 @@ namespace MultiFive.Web.DataAccess
         IQueryable<Player> Players { get; }
         IQueryable<Message> Messages { get; }
 
-        Game CreateGame(Player player1);
+        Game CreateGame(int width, int height, Player player1);
         Player CreatePlayer();
         
         Player FindPlayer(string userId);
