@@ -4,6 +4,6 @@ namespace MultiFive.Web.Models.Messaging
 {
     public interface IMessageFactory
     {
-        Message CreateJoinedMessage(Guid gameId, string senderName, int receiverId);
+        Message CreateJoinedMessage(Guid gameId, string joinedPlayerName);
     }
 }

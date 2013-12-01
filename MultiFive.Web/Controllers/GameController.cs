@@ -46,7 +46,7 @@ namespace MultiFive.Web.Controllers
 
                     var playerName = string.Format("Player {0}", _player.Id);
 
-                    var message = _messageFactory.CreateJoinedMessage(gameId, playerName, game.Player1.Id);
+                    var message = _messageFactory.CreateJoinedMessage(gameId, playerName);
 
                     _repository.AddMessage(message);
 
@@ -62,20 +62,6 @@ namespace MultiFive.Web.Controllers
             }
 
             return View(game);
-        }
-
-        [Authorize]
-        public ContentResult Poll(Guid gameId)
-        {
-            var messages = _repository.PollMessages(gameId, _player.Id);
-
-            var jsonMessages = messages.Select(m => m.JsonContent);
-
-            return new ContentResult
-            {
-                Content = "["+string.Join(",", jsonMessages) + "]",
-                ContentType = "application/json"
-            };
         }
 
         [Authorize]

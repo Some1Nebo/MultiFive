@@ -20,6 +20,6 @@ namespace MultiFive.Web.DataAccess
         Player FindPlayer(string userId);
 
         void AddMessage(Message message);
-        IReadOnlyCollection<Message> PollMessages(Guid gameId, int receiverId);
+        IReadOnlyCollection<Message> PollMessages(Guid? channelId, int? pollerId, int lastId);
     }
 }

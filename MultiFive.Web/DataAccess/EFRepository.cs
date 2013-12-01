@@ -13,13 +13,6 @@ namespace MultiFive.Web.DataAccess
     public class EFRepository: IRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private static readonly object SyncRoot;
-
-        static EFRepository()
-        {
-            SyncRoot = new object();
-            Trace.WriteLine("EFRepository static ctor");
-        }
 
         public EFRepository(ApplicationDbContext dbContext)
         {
@@ -84,26 +77,15 @@ namespace MultiFive.Web.DataAccess
             _dbContext.Messages.Add(message); 
         }
 
-        public IReadOnlyCollection<Message> PollMessages(Guid gameId, int receiverId)
+        public IReadOnlyCollection<Message> PollMessages(Guid? channelId, int? pollerId, int lastId)
         {
-            lock (SyncRoot)
-            {
-                List<Message> messages = Messages
-                    .Where(m => m.ReceiverId == receiverId
-                                && m.GameId == gameId
-                                && m.Status != Status.Fulfilled)
-                    .OrderBy(m => m.CreationTime)
-                    .ToList();
+            var messages = Messages
+                .Where(m => m.Id > lastId &&
+                            m.ChannelId == channelId &&
+                            (m.ReceiverId == pollerId || m.ReceiverId == null))
+                .OrderBy(m => m.Id);
 
-                messages.ForEach(m => m.Status = Status.Fulfilled);
-
-                if (messages.Count > 0)
-                    Thread.Sleep(TimeSpan.FromSeconds(2));
-
-                _dbContext.SaveChanges();
-
-                return messages;
-            }
+            return messages.ToList();
         }
     }
 }

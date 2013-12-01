@@ -1,9 +1,8 @@
 ﻿using System.Security.Principal;
 using Microsoft.AspNet.Identity;
 using MultiFive.Domain;
-using MultiFive.Web.DataAccess;
 
-namespace MultiFive.Web.Infrastructure
+namespace MultiFive.Web.DataAccess
 {
     public static class DataAccessExtensions
     {

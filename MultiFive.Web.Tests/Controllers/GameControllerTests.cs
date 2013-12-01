@@ -149,8 +149,7 @@ namespace MultiFive.Web.Tests.Controllers
 
             repository.Games.Returns(games);
 
-            var dateTimeProvider = Substitute.For<IDateTimeProvider>();
-            var messageFactory = new MessageFactory(dateTimeProvider);
+            var jsonMessageFactory = new JsonMessageFactory();
 
             var messages = new List<Message>();
             repository.AddMessage(Arg.Do<Message>(messages.Add));
@@ -158,16 +157,16 @@ namespace MultiFive.Web.Tests.Controllers
 
             // Act (locking player)
             repository.FindPlayer(Arg.Any<string>()).Returns(player2);
-            var controller2 = new GameController(user, repository, messageFactory);
+            var controller2 = new GameController(user, repository, jsonMessageFactory);
             controller2.Show(game.Id); // locks game to player2
             
             // Act (polling player)
             repository.FindPlayer(Arg.Any<string>()).Returns(player1);
-            var controller1 = new GameController(user, repository, messageFactory);
+            var controller1 = new MessageController(user, repository);
             var pollResult = controller1.Poll(game.Id);
 
             // Assert
-            var jsonMessages = Json.Decode(pollResult.Content);
+            var jsonMessages = Json.Decode(pollResult.Data.ToString());
 
             Assert.AreEqual("joined", jsonMessages[0].messageName);
             Assert.AreEqual(game.Id.ToString(), jsonMessages[0].messageData.gameId);

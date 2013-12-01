@@ -19,7 +19,7 @@ namespace MultiFive.Web
 
             builder.RegisterType<ApplicationDbContext>().AsSelf().InstancePerHttpRequest();             
             builder.RegisterType<EFRepository>().As<IRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<MessageFactory>().As<IMessageFactory>().InstancePerLifetimeScope(); 
+            builder.RegisterType<JsonMessageFactory>().As<IMessageFactory>().InstancePerLifetimeScope(); 
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>().SingleInstance(); 
 
             builder.Register(c => HttpContext.Current.User).InstancePerHttpRequest(); 

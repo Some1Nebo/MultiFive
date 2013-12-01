@@ -13,11 +13,11 @@ var MultiFive = (function(ns) {
         var viewModel = new ViewModel(player1Name, player2Name);
         ko.applyBindings(viewModel);
 
-        var messageHub = new MessageHub(gameId);
+        var messageHub = new ns.MessageHub(gameId);
 
         messageHub.hooks.joined = function(messageData) {
 
-            viewModel.player2Name(messageData.senderName);
+            viewModel.player2Name(messageData.joinedPlayerName);
 
         };
 

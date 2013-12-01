@@ -8,26 +8,18 @@ namespace MultiFive.Web.Models.Messaging
         {
         }
 
-        public Message(Guid gameId, int receiverId, string jsonContent, DateTime creationTime)
+        public Message(Guid? channelId, int? receiverId, string name, string content)
         {
-            if (string.IsNullOrEmpty(jsonContent))
-                throw new ArgumentNullException("jsonContent"); 
-
-            GameId = gameId;
+            ChannelId = channelId;
             ReceiverId = receiverId;
-            JsonContent = jsonContent; 
-
-            CreationTime = creationTime;
-            Status = Status.Unfulfilled;
+            Name = name;
+            Content = content;
         }
 
+        public Guid? ChannelId { get; private set; }
+        public int? ReceiverId { get; private set; }
         public int Id { get; private set; }
-
-        public Guid GameId { get; private set; }
-        public int ReceiverId { get; private set; }
-        public string JsonContent { get; private set; }
-
-        public Status Status { get; set; }
-        public DateTime CreationTime { get; private set; }
-    }       
+        public string Name { get; private set; }
+        public string Content { get; private set; }
+    }
 }
