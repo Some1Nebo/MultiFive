@@ -10,7 +10,7 @@ namespace MultiFive.Domain
         Player2
     }
 
-    public class Game: IObjectWithIncrementalState<GameMove>
+    public class Game: IObjectWithIncrementalState
     {
         public enum State
         {
@@ -40,7 +40,7 @@ namespace MultiFive.Domain
             Height = height;
             FieldData = new byte[Width * Height];
 
-            IncrementNumber = 0;
+            StateNumber = 0;
         }
 
         public void Lock(Player player2, Player startingPlayer = null)
@@ -87,15 +87,10 @@ namespace MultiFive.Domain
 
         public byte[] FieldData { get; private set; }
 
-        public int IncrementNumber { get; private set; }
+        public int StateNumber { get; set; }
 
-        public void Update(GameMove delta, int incrementNumber)
+        public void Move()
         {
-            if (incrementNumber <= IncrementNumber)
-                throw new ArgumentException("IncrementNumber should increase on Update.");
-
-            IncrementNumber = incrementNumber;
-            throw new NotImplementedException("Implement Move logic here");
         }
 
         private int LinearIndex(int row, int column)

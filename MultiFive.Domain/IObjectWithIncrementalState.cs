@@ -1,8 +1,7 @@
 ﻿namespace MultiFive.Domain
 {
-    public interface IObjectWithIncrementalState<in TDelta>
+    public interface IObjectWithIncrementalState
     {
-        int IncrementNumber { get; }
-        void Update(TDelta delta, int incrementNumber);
+        int StateNumber { get; set; }
     }
 }

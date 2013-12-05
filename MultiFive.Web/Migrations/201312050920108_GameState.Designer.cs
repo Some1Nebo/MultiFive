@@ -13,7 +13,7 @@ namespace MultiFive.Web.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201312050835427_GameState"; }
+            get { return "201312050920108_GameState"; }
         }
         
         string IMigrationMetadata.Source

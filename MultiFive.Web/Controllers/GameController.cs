@@ -44,15 +44,15 @@ namespace MultiFive.Web.Controllers
             {
                 if (_player.Id != game.Player1.Id)
                 {
-                    game.Lock(_player);
-
+                    // TODO: wrap in transaction to avoid getting messages out of sync with game state number
                     var playerName = string.Format("Player {0}", _player.Id);
-
                     var message = _messageFactory.CreateJoinedMessage(gameId, playerName);
-
                     _repository.AddMessage(message);
+                    _repository.Save();
 
-                    _repository.Save(); 
+                    game.Lock(_player);
+                    game.StateNumber = message.Id;
+                    _repository.Save();
                 }
 
                 return View(game);
@@ -70,6 +70,7 @@ namespace MultiFive.Web.Controllers
         public JsonResult Move()
         {
             throw new NotImplementedException(); 
+            // do not forget "game.StateNumber = message.Id"
         }
 
         private Game GetGame(Guid gameId)
