@@ -63,14 +63,6 @@ namespace MultiFive.Domain
 
         }
 
-        public Guid Id { get; private set; }
-        public Player Player1 { get; private set; }
-        public Player Player2 { get; private set; }
-        public State CurrentState { get; private set; }
-
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-
         public Cell this[int row, int column]
         {
             get
@@ -81,13 +73,9 @@ namespace MultiFive.Domain
             set
             {
                 var idx = LinearIndex(row, column);
-                FieldData[idx] = (byte) value;
+                FieldData[idx] = (byte)value;
             }
         }
-
-        public byte[] FieldData { get; private set; }
-
-        public int StateNumber { get; set; }
 
         public void Move()
         {
@@ -95,7 +83,18 @@ namespace MultiFive.Domain
 
         private int LinearIndex(int row, int column)
         {
-            return row*Width + column;
+            return row * Width + column;
         }
+
+        public Guid Id { get; private set; }
+        public Player Player1 { get; private set; }
+        public Player Player2 { get; private set; }
+        public State CurrentState { get; private set; }
+
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+
+        public byte[] FieldData { get; private set; }
+        public int StateNumber { get; set; }
     }
 }
