@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MultiFive.Domain
 {
@@ -79,6 +78,7 @@ namespace MultiFive.Domain
 
         public void Move()
         {
+            throw new NotImplementedException("Implement Move method");
         }
 
         private int LinearIndex(int row, int column)
