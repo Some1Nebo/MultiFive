@@ -231,6 +231,10 @@
     <Compile Include="Migrations\201312010212258_MessageNameToColumn.Designer.cs">
       <DependentUpon>201312010212258_MessageNameToColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201312050835427_GameState.cs" />
+    <Compile Include="Migrations\201312050835427_GameState.Designer.cs">
+      <DependentUpon>201312050835427_GameState.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
@@ -332,6 +336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201312010212258_MessageNameToColumn.resx">
       <DependentUpon>201312010212258_MessageNameToColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201312050835427_GameState.resx">
+      <DependentUpon>201312050835427_GameState.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

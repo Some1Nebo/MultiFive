@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MultiFive.Domain
 {
@@ -9,7 +10,7 @@ namespace MultiFive.Domain
         Player2
     }
 
-    public class Game
+    public class Game: IObjectWithIncrementalState<GameMove>
     {
         public enum State
         {
@@ -35,7 +36,11 @@ namespace MultiFive.Domain
             Player2 = null;
             CurrentState = State.NotStarted;
 
-            Field = new Cell[height, width];
+            Width = width;
+            Height = height;
+            FieldData = new byte[Width * Height];
+
+            IncrementNumber = 0;
         }
 
         public void Lock(Player player2, Player startingPlayer = null)
@@ -55,10 +60,7 @@ namespace MultiFive.Domain
             CurrentState = startingPlayer.Id == Player1.Id
                              ? State.Player1Move
                              : State.Player2Move;
-        }
 
-        public void Move()
-        {
         }
 
         public Guid Id { get; private set; }
@@ -66,6 +68,39 @@ namespace MultiFive.Domain
         public Player Player2 { get; private set; }
         public State CurrentState { get; private set; }
 
-        public Cell[,] Field { get; private set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+
+        public Cell this[int row, int column]
+        {
+            get
+            {
+                var idx = LinearIndex(row, column);
+                return (Cell)FieldData[idx];
+            }
+            set
+            {
+                var idx = LinearIndex(row, column);
+                FieldData[idx] = (byte) value;
+            }
+        }
+
+        public byte[] FieldData { get; private set; }
+
+        public int IncrementNumber { get; private set; }
+
+        public void Update(GameMove delta, int incrementNumber)
+        {
+            if (incrementNumber <= IncrementNumber)
+                throw new ArgumentException("IncrementNumber should increase on Update.");
+
+            IncrementNumber = incrementNumber;
+            throw new NotImplementedException("Implement Move logic here");
+        }
+
+        private int LinearIndex(int row, int column)
+        {
+            return row*Width + column;
+        }
     }
 }
