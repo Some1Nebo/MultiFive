@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using MultiFive.Domain;
+using MultiFive.Web.Models;
 using MultiFive.Web.Models.Messaging;
 
 namespace MultiFive.Web.DataAccess
@@ -29,6 +31,11 @@ namespace MultiFive.Web.DataAccess
         public IQueryable<Message> Messages
         {
             get { return _dbContext.Messages; }
+        }
+
+        public IQueryable<GameSnapshot> GameSnapshots
+        {
+            get { return _dbContext.GameSnapshots; }
         }
 
         public void Save()
@@ -83,6 +90,11 @@ namespace MultiFive.Web.DataAccess
                 .OrderBy(m => m.Id);
 
             return messages.ToList();
+        }
+
+        public void UpdateGameSnapshot(GameSnapshot gameSnapshot)
+        {
+            _dbContext.GameSnapshots.AddOrUpdate(gameSnapshot);
         }
     }
 }

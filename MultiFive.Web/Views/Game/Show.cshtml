@@ -1,10 +1,10 @@
-﻿@model MultiFive.Domain.Game
+﻿@model MultiFive.Web.Models.GameSnapshot
 
 @{
-    ViewBag.Title = "Game " + @Model.Id;
+    ViewBag.Title = "Game " + @Model.Game.Id;
 }
 
-<h2>Game @Model.Id</h2>
+<h2>Game @Model.Game.Id</h2>
 
 <h4>Players:</h4>
 
@@ -19,7 +19,7 @@
 
 @section codebehind
 {
-    MultiFive.show("@Model.Id", "@Model.Player1", "@Model.Player2");
+    MultiFive.show("@Model.Game.Id", "@Model.Game.Player1", "@Model.Game.Player2", @Model.LastMessageId);
 }
 
 @section scripts

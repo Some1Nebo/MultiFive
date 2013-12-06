@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
+using MultiFive.Web.Models;
 using WebHelpers = System.Web.Helpers;
 using MultiFive.Domain;
 using MultiFive.Web.DataAccess;
@@ -32,29 +33,34 @@ namespace MultiFive.Web.Controllers
             var game = _repository.CreateGame(DefaultWidth, DefaultHeight, _player);
             _repository.Save();
 
-            return RedirectToRoute("Game", new {gameId = game.Id});
+            return RedirectToRoute("ShowGame", new { gameId = game.Id });
         }
 
         [Authorize]
         public ActionResult Show(Guid gameId)
         {
             var game = GetGame(gameId);
+            GameSnapshot snapshot = null;
 
             if (game.Player2 == null)
             {
                 if (_player.Id != game.Player1.Id)
                 {
-                    // TODO: wrap in transaction to avoid getting messages out of sync with game state number
+                    game.Lock(_player);
+
                     var playerName = string.Format("Player {0}", _player.Id);
+
                     var message = _messageFactory.CreateJoinedMessage(gameId, playerName);
                     _repository.AddMessage(message);
-                    _repository.Save();
 
-                    game.Lock(_player);
+                    snapshot = new GameSnapshot(game, message);
+                    _repository.UpdateGameSnapshot(snapshot);
+
                     _repository.Save();
+                    
                 }
 
-                return View(game);
+                return View(snapshot ?? new GameSnapshot(game));
             }
 
             if (_player.Id != game.Player1.Id && _player.Id != game.Player2.Id)
@@ -62,7 +68,12 @@ namespace MultiFive.Web.Controllers
                 return View("AlreadyFull", gameId);
             }
 
-            return View(game);
+            snapshot = _repository.GameSnapshots
+                .Include(s => s.Game)
+                .Include(s => s.LastMessage)
+                .FirstOrDefault(s => s.Game.Id == game.Id);
+
+            return View(snapshot ?? new GameSnapshot(game));
         }
 
         [Authorize]

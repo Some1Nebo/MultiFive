@@ -1,13 +1,15 @@
 ﻿var MultiFive = (function(ns) {
 
-    ns.MessageHub = function(gameId) {
+    ns.MessageHub = function(gameId, lastMessageId) {
 
         var self = this;
 
         // PRIVATE
         var pollTrigger;
-        var lastMessageId = 0;
+        lastMessageId = lastMessageId || 0;
         var nPoll = 0;
+
+        console.log("Last message id set to:", lastMessageId);
 
         function pollServer() {
 

@@ -8,12 +8,12 @@ var MultiFive = (function(ns) {
         this.player2Name = ko.observable(player2Name);
     }
 
-    ns.show = function(gameId, player1Name, player2Name) {
+    ns.show = function(gameId, player1Name, player2Name, lastMessageId) {
 
         var viewModel = new ViewModel(player1Name, player2Name);
         ko.applyBindings(viewModel);
 
-        var messageHub = new ns.MessageHub(gameId);
+        var messageHub = new ns.MessageHub(gameId, lastMessageId);
 
         messageHub.hooks.joined = function(messageData) {
 

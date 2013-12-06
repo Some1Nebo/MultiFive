@@ -15,6 +15,13 @@ namespace MultiFive.Web.Models
         {
         }
 
+        public GameSnapshot(Game game)
+        {
+            Game = game;
+            LastMessage = null;
+            LastMessageId = 0;
+        }
+
         public GameSnapshot(Game game, Message lastMessage)
         {
             Game = game;
@@ -28,5 +35,8 @@ namespace MultiFive.Web.Models
         [Key]
         [ForeignKey("Game")]
         public Guid GameId { get; private set; }
+
+        [ForeignKey("LastMessage")]
+        public int LastMessageId { get; private set; }
     }
 }
