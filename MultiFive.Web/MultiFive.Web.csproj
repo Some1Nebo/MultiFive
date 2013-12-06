@@ -235,11 +235,16 @@
     <Compile Include="Migrations\201312050920108_GameState.Designer.cs">
       <DependentUpon>201312050920108_GameState.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201312060730503_GameStateRefactored.cs" />
+    <Compile Include="Migrations\201312060730503_GameStateRefactored.Designer.cs">
+      <DependentUpon>201312060730503_GameStateRefactored.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="DataAccess\ApplicationDbContext.cs" />
     <Compile Include="DataAccess\IRepository.cs" />
+    <Compile Include="Models\GameSnapshot.cs" />
     <Compile Include="Models\Messaging\IMessageFactory.cs" />
     <Compile Include="Models\Messaging\Message.cs" />
     <Compile Include="Models\Messaging\JsonMessageFactory.cs" />
@@ -339,6 +344,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201312050920108_GameState.resx">
       <DependentUpon>201312050920108_GameState.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201312060730503_GameStateRefactored.resx">
+      <DependentUpon>201312060730503_GameStateRefactored.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

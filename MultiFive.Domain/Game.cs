@@ -9,7 +9,7 @@ namespace MultiFive.Domain
         Player2
     }
 
-    public class Game: IObjectWithIncrementalState
+    public class Game
     {
         public enum State
         {
@@ -38,8 +38,6 @@ namespace MultiFive.Domain
             Width = width;
             Height = height;
             FieldData = new byte[Width * Height];
-
-            StateNumber = 0;
         }
 
         public void Lock(Player player2, Player startingPlayer = null)
@@ -95,6 +93,5 @@ namespace MultiFive.Domain
         public int Height { get; private set; }
 
         public byte[] FieldData { get; private set; }
-        public int StateNumber { get; set; }
     }
 }

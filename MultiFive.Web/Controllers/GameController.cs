@@ -51,7 +51,6 @@ namespace MultiFive.Web.Controllers
                     _repository.Save();
 
                     game.Lock(_player);
-                    game.StateNumber = message.Id;
                     _repository.Save();
                 }
 

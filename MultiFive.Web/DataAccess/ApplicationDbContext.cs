@@ -5,7 +5,7 @@ using MultiFive.Web.Models;
 using MultiFive.Web.Models.Messaging;
 
 namespace MultiFive.Web.DataAccess
-{
+{    
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
@@ -16,5 +16,6 @@ namespace MultiFive.Web.DataAccess
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<GameSnapshot> GameSnapshots { get; set; }
     }
 }
