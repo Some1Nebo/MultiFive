@@ -67,16 +67,48 @@ namespace MultiFive.Domain
                 var idx = LinearIndex(row, column);
                 return (Cell)FieldData[idx];
             }
-            set
+
+            private set
             {
                 var idx = LinearIndex(row, column);
                 FieldData[idx] = (byte)value;
             }
         }
 
-        public void Move()
+        public void Move(Player player, int row, int column)
         {
-            throw new NotImplementedException("Implement Move method");
+            if (player == Player1)
+            {
+                if (CurrentState == State.Player1Move)
+                {
+                    this[row, column] = Cell.Player1;
+                }
+                else
+                {
+                    var msg = string.Format("Invalid move for game state {0}", CurrentState);
+                    throw new InvalidOperationException(msg);
+                }
+            }
+            else if (player == Player2)
+            {
+                if (CurrentState == State.Player2Move)
+                {
+                    this[row, column] = Cell.Player2;
+                }
+                else
+                {
+                    var msg = string.Format("Invalid move for game state {0}", CurrentState);
+                    throw new InvalidOperationException(msg);
+                }
+
+            }
+            else
+            {
+                var msg = string.Format("Player must be either player ({0}) or player ({1}), but was player ({2}).",
+                    Player1.Id, Player2.Id, player.Id);
+
+                throw new ArgumentException(msg);
+            }
         }
 
         private int LinearIndex(int row, int column)
