@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Should.Fluent;
 
@@ -11,6 +7,42 @@ namespace MultiFive.Domain.Tests
     [TestFixture]
     public class GameTests
     {
+        [Test]
+        public void Constructor_Throws_ArgumentNullException_If_Player1_Is_Null()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Game(10, 10, null));
+        }
+
+        [Test]
+        public void Has_NotStarted_State_When_Just_Created()
+        {
+            var p1 = new Player(1); 
+
+            var game = new Game(10, 10, p1);
+
+            game.CurrentState.Should().Equal(Game.State.NotStarted); 
+        }
+
+        [Test]
+        public void StartingPlayer_Moves_Game_To_Correct_State()
+        {
+            var p1 = new Player(1);
+            var p2 = new Player(2);
+
+            var game = new Game(10, 10, p1);
+            game.Lock(p2);
+
+            var game1 = new Game(10, 10, p1);
+            game.Lock(p2, p1);
+
+            var game2 = new Game(10, 10, p2);
+            game2.Lock(p2, p2);
+
+            game.CurrentState.Should().Equal(Game.State.Player1Move);
+            game1.CurrentState.Should().Equal(Game.State.Player1Move);
+            game2.CurrentState.Should().Equal(Game.State.Player2Move);
+        }
+
         [Test]
         public void Move_Should_Be_Correctly_Stored()
         {
@@ -26,10 +58,9 @@ namespace MultiFive.Domain.Tests
         }
 
         [Test]
-        public void Unlocked_Game_Should_Throw_If_Player_Makes_Move()
+        public void Throws_If_Player_Makes_Move_In_Unlocked_Game()
         {
-            var p1 = new Player(1);
-            var p2 = new Player(2);
+            var p1 = new Player(1); 
 
             var game = new Game(10, 10, p1);
 
@@ -37,7 +68,7 @@ namespace MultiFive.Domain.Tests
         }
 
         [Test]
-        public void Game_Should_Throw_When_Invalid_Player_Makes_Move()
+        public void Throws_When_Invalid_Player_Makes_Move()
         {
             var p1 = new Player(1);
             var p2 = new Player(2);
@@ -46,6 +77,54 @@ namespace MultiFive.Domain.Tests
             game.Lock(p2);
 
             Assert.Throws<InvalidOperationException>(() => game.Move(p2, 5, 5));
+        }
+
+        [Test]
+        public void Throws_If_Player_Makes_Move_In_Game_That_Is_Over()
+        {
+            Assert.Ignore(); 
+        }
+
+        [Test]
+        public void Has_Player2Move_State_When_Player1_Made_A_Move_()
+        {
+            Assert.Ignore(); 
+        }
+
+        [Test]
+        public void Has_Player1Move_State_When_Player2_Made_A_Move_()
+        {
+            Assert.Ignore();
+        }
+
+        [Test]
+        public void Has_Draw_State_When_Players_Agreed_To_Truce_In_Game_That_Is_In_Progress()
+        {
+            var p1 = new Player(1);
+            var p2 = new Player(2);
+
+            var game = new Game(10, 10, p1);
+            game.Lock(p2);
+
+            game.Truce();
+
+            game.CurrentState.Should().Equal(Game.State.Draw); 
+        }
+
+        [Test]
+        public void Throws_When_Players_Attempt_To_Truce_In_Game_That_Is_Over()
+        {
+            Assert.Ignore(); 
+        }
+
+        [Test]
+        public void Throws_When_Players_Attempt_To_Truce_In_Game_That_Has_Not_Started()
+        {
+            var p1 = new Player(1); 
+
+            var game = new Game(10, 10, p1);
+
+            Assert.Throws<InvalidOperationException>(game.Truce);
         }
     }
 }
