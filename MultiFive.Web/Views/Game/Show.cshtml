@@ -3,23 +3,47 @@
 @{
     ViewBag.Title = "Game " + @Model.Game.Id;
 }
+<style type="text/css">
+    .cell-30 {
+        min-width: 40px;
+        min-height: 40px;
+    }
+</style>
 
-<h2>Game @Model.Game.Id</h2>
-
-<h4>Players:</h4>
-
-<ol>
+<ul>
     <li>
-        <span data-bind="text: player1Name"/>
+        <span data-bind="text: player1Name" />
     </li>
     <li>
-        <span data-bind="text: player2Name"/>
+        <span data-bind="text: player2Name" />
     </li>
-</ol>
+</ul>
+
+<div class="container">
+    @for (int row = 0; row < Model.Game.Height; ++row)
+    {
+        <div class="row">
+            @for (int col = 0; col < Model.Game.Width; ++col)
+            {
+                <a href="#" class="btn btn-default cell-30" data-bind="click: function() { cellClicked(@row, @col);}">
+                    <span data-bind="html: field[@row][@col]"></span>
+                </a>
+            }
+        </div>
+    }
+</div>
 
 @section codebehind
 {
-    MultiFive.show("@Model.Game.Id", "@Model.Game.Player1", "@Model.Game.Player2", @Model.LastMessageId);
+    MultiFive.show({
+        gameId: "@Model.Game.Id",
+        player1Name: "@Model.Game.Player1",
+        player2Name: "@Model.Game.Player2",
+        width: @Model.Game.Width,
+        height: @Model.Game.Height,
+        fieldData: @Json.Encode(Model.Game.FieldData),
+        lastMessageId: @Model.LastMessageId
+    });
 }
 
 @section scripts
