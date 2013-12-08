@@ -1,11 +1,17 @@
-﻿var MultiFive = (function(ns) {
-
+﻿var MultiFive = (function (ns) {
+    
     ns.State = function(setup) {
         var self = this;
 
-        self.onEntry = function () { if (setup.onEntry) setup.onEntry(); };
+        self.onEntry = function() {
+            if (setup && setup.onEntry)
+                setup.onEntry();
+        };
 
-        self.onExit = function () { if (setup.onExit) setup.onExit(); };
+        self.onExit = function() {
+            if (setup && setup.onExit)
+                setup.onExit();
+        };
 
         self.handlers = {};
 

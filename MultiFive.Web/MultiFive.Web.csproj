@@ -286,6 +286,8 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\Show\show.js" />
     <Content Include="Scripts\stateless.js" />
+    <Content Include="Scripts\Tests\stateless-tests.js" />
+    <Content Include="Scripts\Tests\stateless-tests.html" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
