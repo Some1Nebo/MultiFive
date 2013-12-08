@@ -36,6 +36,8 @@
 @section codebehind
 {
     MultiFive.show({
+        me: "@ViewBag.Me",
+        gameState: "@Model.Game.CurrentState",
         gameId: "@Model.Game.Id",
         player1Name: "@Model.Game.Player1",
         player2Name: "@Model.Game.Player2",
@@ -50,5 +52,6 @@
 {
     @Scripts.Render("~/bundles/knockout")
     @Scripts.Render("~/bundles/messageHub")
+    <script src="~/Scripts/stateless.js"></script>
     @Scripts.Render("~/bundles/show")
 }

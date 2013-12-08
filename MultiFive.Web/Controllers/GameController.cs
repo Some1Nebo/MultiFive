@@ -40,12 +40,24 @@ namespace MultiFive.Web.Controllers
         public ActionResult Show(Guid gameId)
         {
             var game = GetGame(gameId);
-            GameSnapshot snapshot = null;
+
+            GameSnapshot snapshot = _repository.GameSnapshots
+                                        .Include(s => s.Game)
+                                        .Include(s => s.LastMessage)
+                                        .FirstOrDefault(s => s.Game.Id == game.Id)
+                                    ?? new GameSnapshot(game);
+
+            ViewBag.Me = "Spectator";
+
+            if (_player.Id == game.Player1.Id)
+                ViewBag.Me = "Player1";
 
             if (game.Player2 == null)
             {
                 if (_player.Id != game.Player1.Id)
                 {
+                    ViewBag.Me = "Player2";
+
                     game.Lock(_player);
 
                     var playerName = string.Format("Player {0}", _player.Id);
@@ -57,10 +69,12 @@ namespace MultiFive.Web.Controllers
                     _repository.UpdateGameSnapshot(snapshot);
 
                     _repository.Save();
-                    
+
+                    // allow player2 to receive the message too
+                    return View(new GameSnapshot(game));
                 }
 
-                return View(snapshot ?? new GameSnapshot(game));
+                return View(snapshot);
             }
 
             if (_player.Id != game.Player1.Id && _player.Id != game.Player2.Id)
@@ -68,12 +82,7 @@ namespace MultiFive.Web.Controllers
                 return View("AlreadyFull", gameId);
             }
 
-            snapshot = _repository.GameSnapshots
-                .Include(s => s.Game)
-                .Include(s => s.LastMessage)
-                .FirstOrDefault(s => s.Game.Id == game.Id);
-
-            return View(snapshot ?? new GameSnapshot(game));
+            return View(snapshot);
         }
 
         [Authorize]
