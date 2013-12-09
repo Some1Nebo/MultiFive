@@ -61,7 +61,7 @@ namespace MultiFive.Web.Controllers
                     _repository.AddMessage(message);
 
                     snapshot = new GameSnapshot(game, message);
-                    _repository.UpdateGameSnapshot(snapshot);
+                    _repository.AddGameSnapshot(snapshot);
 
                     _repository.Save();
 
@@ -86,14 +86,14 @@ namespace MultiFive.Web.Controllers
             var game = GetGame(gameId);
             var snapshot = GetGameSnapshot(game);
 
-            game.Move(_player, 1, 1);
+            game.Move(_player, row, col);
 
             PlayerRole playerRole = GetPlayerRole(game, _player);
 
             var message = _messageFactory.CreateMovedMessage(gameId, playerRole, row, col, game.CurrentState);
             _repository.AddMessage(message);
 
-            _repository.UpdateGameSnapshot(snapshot);
+            snapshot.LastMessage = message;
 
             _repository.Save();
 

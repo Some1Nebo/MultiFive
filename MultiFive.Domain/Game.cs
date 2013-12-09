@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Stateless;
 
 namespace MultiFive.Domain
@@ -94,8 +95,14 @@ namespace MultiFive.Domain
 
             private set
             {
+                if (this[row, column] != Cell.Empty)
+                    throw new InvalidOperationException("Cannot mark a cell that is already marked.");
+
                 var idx = LinearIndex(row, column);
                 FieldData[idx] = (byte)value;
+
+                // TODO: refactor this hack, done for entityframework to pick-up changes before saving
+                FieldData = FieldData.ToArray();
             }
         }
 
@@ -165,7 +172,7 @@ namespace MultiFive.Domain
                 throw new InvalidOperationException(msg);
             }
 
-            TryMarkCell(row, column, Cell.Player1);
+            this[row, column] = Cell.Player1;
 
             var outcome = GetGameOutcome();
 
@@ -187,7 +194,7 @@ namespace MultiFive.Domain
                 throw new InvalidOperationException(msg);
             }
 
-            TryMarkCell(row, column, Cell.Player2);
+            this[row, column] = Cell.Player2;
 
             var outcome = GetGameOutcome();
 
@@ -202,14 +209,6 @@ namespace MultiFive.Domain
         private Outcome? GetGameOutcome()
         {
             return null;
-        }
-
-        private void TryMarkCell(int row, int column, Cell cellValue)
-        {
-            if (this[row, column] != Cell.Empty)
-                throw new InvalidOperationException("Cannot mark a cell that is already marked.");
-
-            this[row, column] = cellValue;
         }
     }
 }

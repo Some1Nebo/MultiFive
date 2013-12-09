@@ -92,9 +92,9 @@ namespace MultiFive.Web.DataAccess
             return messages.ToList();
         }
 
-        public void UpdateGameSnapshot(GameSnapshot gameSnapshot)
+        public void AddGameSnapshot(GameSnapshot gameSnapshot)
         {
-            _dbContext.GameSnapshots.AddOrUpdate(gameSnapshot);
+            _dbContext.GameSnapshots.Add(gameSnapshot);
         }
     }
 }

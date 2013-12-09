@@ -24,6 +24,6 @@ namespace MultiFive.Web.DataAccess
         void AddMessage(Message message);
         IReadOnlyCollection<Message> PollMessages(Guid? channelId, int? pollerId, int lastId);
 
-        void UpdateGameSnapshot(GameSnapshot gameSnapshot);
+        void AddGameSnapshot(GameSnapshot gameSnapshot);
     }
 }
