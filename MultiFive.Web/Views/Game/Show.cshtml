@@ -8,14 +8,17 @@
         min-width: 40px;
         min-height: 40px;
     }
+    .playerActive {
+        font-weight: bold
+    }
 </style>
 
 <ul>
     <li>
-        <span data-bind="text: player1Name" />
+        <span data-bind="text: player1Name, css: player1Active" />
     </li>
     <li>
-        <span data-bind="text: player2Name" />
+        <span data-bind="text: player2Name, css: player2Active" />
     </li>
 </ul>
 
@@ -36,7 +39,7 @@
 @section codebehind
 {
     MultiFive.show({
-        me: "@ViewBag.Me",
+        playerRole: "@ViewBag.PlayerRole",
         gameState: "@Model.Game.CurrentState",
         gameId: "@Model.Game.Id",
         player1Name: "@Model.Game.Player1",

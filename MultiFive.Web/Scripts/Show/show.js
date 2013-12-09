@@ -2,7 +2,28 @@
 // module pattern
 
 var MultiFive = (function (ns) {
+    
+    // constants and enums
+    var emptyCellSymbol = "&nbsp;";
+    var player1Symbol = "X";
+    var player2Symbol = "O";
 
+    var GameState = {
+        NotStarted: "NotStarted",
+        Player1Move: "Player1Move",
+        Player2Move: "Player2Move",
+        Player1Win: "Player1Win",
+        Player2Win: "Player2Win",
+        Draw: "Draw"
+    };
+    
+    var PlayerRole = {
+        Spectator: "Spectator",
+        Player1: "Player1",
+        Player2: "Player2"
+    };
+    
+    // main
     function ViewModel(gameData, cellClicked) {
         var self = this;
         
@@ -12,9 +33,9 @@ var MultiFive = (function (ns) {
         self.field = [];
 
         var cellView = {
-            "0": "&nbsp;",
-            "1": "X",
-            "2": "O"
+            "0": emptyCellSymbol,
+            "1": player1Symbol,
+            "2": player2Symbol
         };
         
         for (var i = 0; i < gameData.height; ++i) {
@@ -29,69 +50,91 @@ var MultiFive = (function (ns) {
         }
 
         self.cellClicked = cellClicked;
+
+        self.gameState = ko.observable(gameData.gameState);
+
+        function chooseCssFor(state)
+        {
+            return self.gameState() == state ? "playerActive" : null;
+        }
+
+        self.player1Active = ko.computed(function () {
+            return chooseCssFor(GameState.Player1Move);
+        });
+        
+        self.player2Active = ko.computed(function () {
+            return chooseCssFor(GameState.Player2Move);
+        });
         
         return self;
     }
 
     ns.show = function (gameData) {
         var self = this;
+
+        console.log(gameData);
+        
+        // View model setup
+        var viewModel = new ViewModel(gameData, function (r, c) {
+            if (stateMachine.currentState.cellClicked)
+                stateMachine.currentState.cellClicked(r, c);
+        });
+
+        ko.applyBindings(viewModel);
         
         // State machine setup
-        var currentSymbol = "";
-
-        var unlockedState = new MultiFive.State({
+        var unlocked = new MultiFive.State({                
             onEntry: function() {
-                console.log("entered unlocked state");
+                console.log("unlocked.onEntry");
             },
             onExit: function () {
-                console.log("exited unlocked state");
-            },
-        });
-
-        var p1MoveState = new MultiFive.State({
-            onEntry: function() {
-                console.log("entered p1MoveState");
-                currentSymbol = "X";
-            },
-            onExit: function() {
-                console.log("exited p1MoveState");
+                console.log("unlocked.onExit");
             }
         });
 
-        var p2MoveState = new MultiFive.State({
-                onEntry: function() {
-                    console.log("entered p2MoveState");
-                    currentSymbol = "O";
-                },
-                onExit: function() {
-                    console.log("exited p2MoveState");
-                }
+        var myMove = new MultiFive.State({
+            onEntry: function () {
+                console.log("myMove.onEntry");
+            },
+            onExit: function () {
+                console.log("myMove.onExit");
             }
-        );
-
-        unlockedState.permitDynamic("lock", function() {
-            if (gameData.me == "Player1")
-                return p1MoveState;
-            else if (gameData.me == "Player2")
-                return p2MoveState;
-            
-            return null;
         });
         
-        p1MoveState.permit("move", p2MoveState);
-        p2MoveState.permit("move", p1MoveState);
-
-        var stateMachine = new MultiFive.StateMachine(unlockedState);
-
-        // End of state machine setup
-
-        var cellClicked = function (r, c) {
-            viewModel.field[r][c](currentSymbol);
+        myMove.cellClicked = function (row, col) {
+            var symbol = gameData.playerRole == PlayerRole.Player1 ? player1Symbol : player2Symbol;
+            viewModel.field[row][col](symbol);
             stateMachine.fire("move");
+            
+            // send ajax to server
+        };
+        
+        var notMyMove = new MultiFive.State({
+            onEntry: function () {
+                console.log("notMyMove.onEntry");
+            },
+            onExit: function () {
+                console.log("notMyMove.onExit");
+            }
+        });
+
+        var chooseState = function () {
+            // not the cleanest condition, but avoids some code-repetition
+            return (
+                    ((gameData.playerRole == PlayerRole.Player1) && viewModel.player1Active()) ||
+                    ((gameData.playerRole == PlayerRole.Player2) && viewModel.player2Active())
+                   )
+                ? myMove
+                : notMyMove;
         };
 
-        var viewModel = new ViewModel(gameData, cellClicked);
-        ko.applyBindings(viewModel);
+        unlocked.permitDynamic("lock", chooseState);
+        notMyMove.permitDynamic("move", chooseState);
+        myMove.permit("move", notMyMove);
+
+        var initialState = gameData.gameState == GameState.NotStarted ? unlocked : chooseState();
+
+        var stateMachine = new MultiFive.StateMachine(initialState);
 
         // Message hub setup
         var messageHub = new ns.MessageHub(gameData.gameId, gameData.lastMessageId);
@@ -99,14 +142,14 @@ var MultiFive = (function (ns) {
         messageHub.hooks.joined = function(messageData) {
 
             viewModel.player2Name(messageData.joinedPlayerName);
+            viewModel.gameState(messageData.gameState);
+            
             stateMachine.fire("lock");
-
+            
         };
         
         messageHub.listen();
         
-        // End of message hub setup
-
         return self;
     };
 

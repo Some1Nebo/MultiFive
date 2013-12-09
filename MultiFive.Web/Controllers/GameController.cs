@@ -47,22 +47,22 @@ namespace MultiFive.Web.Controllers
                                         .FirstOrDefault(s => s.Game.Id == game.Id)
                                     ?? new GameSnapshot(game);
 
-            ViewBag.Me = "Spectator";
+            ViewBag.PlayerRole = PlayerRole.Spectator;
 
             if (_player.Id == game.Player1.Id)
-                ViewBag.Me = "Player1";
+                ViewBag.PlayerRole = PlayerRole.Player1;
 
             if (game.Player2 == null)
             {
                 if (_player.Id != game.Player1.Id)
                 {
-                    ViewBag.Me = "Player2";
+                    ViewBag.PlayerRole = PlayerRole.Player2;
 
-                    game.Lock(_player);
+                    game.Lock(_player); // player1 chosen as first
 
                     var playerName = string.Format("Player {0}", _player.Id);
 
-                    var message = _messageFactory.CreateJoinedMessage(gameId, playerName);
+                    var message = _messageFactory.CreateJoinedMessage(gameId, playerName, game.CurrentState.ToString());
                     _repository.AddMessage(message);
 
                     snapshot = new GameSnapshot(game, message);

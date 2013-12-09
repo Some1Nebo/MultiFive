@@ -252,6 +252,7 @@
     <Compile Include="Models\Messaging\IMessageFactory.cs" />
     <Compile Include="Models\Messaging\Message.cs" />
     <Compile Include="Models\Messaging\JsonMessageFactory.cs" />
+    <Compile Include="Models\PlayerRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
