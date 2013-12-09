@@ -100,7 +100,8 @@ var MultiFive = (function (ns) {
                 var previousSymbol = self.field[r][c]();
                 
                 self.field[r][c](newSymbol);
-
+                stateMachine.fire("move");
+                
                 var moveUrl = "game/move/" + gameData.gameId;
                 
                 // send ajax to server
@@ -115,9 +116,6 @@ var MultiFive = (function (ns) {
                 }).success(function (newGameState) {
 
                     self.gameState(newGameState);
-
-                    // adjust state on success
-                    stateMachine.fire("move");
 
                 }).error(function (xhr, textStatus, errorThrown) {
 
