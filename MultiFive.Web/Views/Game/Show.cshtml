@@ -4,12 +4,15 @@
     ViewBag.Title = "Game " + @Model.Game.Id;
 }
 <style type="text/css">
-    .cell-30 {
-        min-width: 40px;
-        min-height: 40px;
+    #gameField a {
+        min-width: 35px;
+        max-width: 35px;
     }
     .playerActive {
         font-weight: bold
+    }
+    .fullScreen {
+        width: 90%
     }
 </style>
 
@@ -22,19 +25,21 @@
     </li>
 </ul>
 
-<div class="container">
+<table id="gameField">
     @for (int row = 0; row < Model.Game.Height; ++row)
     {
-        <div class="row">
+        <tr>
             @for (int col = 0; col < Model.Game.Width; ++col)
             {
-                <a href="#" class="btn btn-default cell-30" data-bind="click: function() { cellClicked(@row, @col);}">
-                    <span data-bind="html: field[@row][@col]"></span>
-                </a>
+                <td>
+                    <a href="#" class="btn btn-default" data-bind="click: function() { cellClicked(@row, @col);}">
+                        <span data-bind="html: field[@row][@col]"></span>
+                    </a>
+                </td>
             }
-        </div>
+        </tr>
     }
-</div>
+</table>
 
 @section codebehind
 {
