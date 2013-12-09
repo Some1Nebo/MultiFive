@@ -11,12 +11,6 @@ namespace MultiFive.Domain
         Player2
     }
 
-    enum Outcome
-    {
-        Win,
-        Draw
-    }
-
     public class Game
     {
         public enum State
@@ -35,6 +29,14 @@ namespace MultiFive.Domain
             PlayerMove,
             Truce
         }
+
+        enum Outcome
+        {
+            Win,
+            Draw
+        }
+
+        private const int WinnerChain = 5; 
 
         private StateMachine<State, Event> _stateMachine;
         private StateMachine<State, Event>.TriggerWithParameters<Player, int, int> _moveEvent;
@@ -174,7 +176,7 @@ namespace MultiFive.Domain
 
             this[row, column] = Cell.Player1;
 
-            var outcome = GetGameOutcome();
+            var outcome = GetGameOutcome(row, column);
 
             if (outcome.HasValue)
                 return (outcome.Value == Outcome.Win) ?
@@ -196,7 +198,7 @@ namespace MultiFive.Domain
 
             this[row, column] = Cell.Player2;
 
-            var outcome = GetGameOutcome();
+            var outcome = GetGameOutcome(row, column);
 
             if (outcome.HasValue)
                 return (outcome.Value == Outcome.Win) ?
@@ -206,9 +208,48 @@ namespace MultiFive.Domain
             return State.Player1Move;
         }
 
-        private Outcome? GetGameOutcome()
+        private Outcome? GetGameOutcome(int row, int column)
         {
-            return null;
+            if (this[row, column] == Cell.Empty)
+                throw new ArgumentException("row & col");
+
+            bool isWin = IsChainLongEnough(row, column, 0, 1)
+                         || IsChainLongEnough(row, column, 1, 0)
+                         || IsChainLongEnough(row, column, 1, 1)
+                         || IsChainLongEnough(row, column, 1, -1);
+
+            // todo: check if the game is draw
+
+            return isWin ? Outcome.Win : (Outcome?)null;
+        }
+
+        private bool IsChainLongEnough(int row, int column, int dr, int dc)
+        {
+            int currLength = 1;
+            currLength = GrowChain(row, column, currLength, dr, dc);
+            currLength = GrowChain(row, column, currLength, -dr, -dc); 
+
+            return (currLength == WinnerChain); 
+        }
+
+        private int GrowChain(int row, int column, int currLength, int dr, int dc)
+        {
+            var cellOwner = this[row, column];
+            int rowIdx = row;
+            int colIdx = column;
+
+            while (currLength < WinnerChain)
+            {
+                rowIdx += dr;
+                colIdx += dc;
+
+                if (this[rowIdx, colIdx] == cellOwner)
+                    currLength += 1;
+                else
+                    break;
+            }
+
+            return currLength; 
         }
     }
 }
