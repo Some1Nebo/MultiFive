@@ -13,7 +13,7 @@
 
         function pollServer() {
 
-            console.log("poll #", nPoll++, "...");
+            //console.log("poll #", nPoll++, "...");
 
             $.ajax({
                 url: "message/poll",
@@ -24,7 +24,7 @@
                 cache: false
             }).success(function(messages) {
 
-                console.log("poll successful, messages:", messages);
+                //console.log("poll successful, messages:", messages);
                 dispatchMessages(messages);
 
             }).error(function(xhr, textStatus, errorThrown) {
