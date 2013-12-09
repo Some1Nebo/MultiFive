@@ -92,9 +92,14 @@ var MultiFive = (function (ns) {
         myMove.cellClicked = function(r, c) {
 
             if (self.field[r][c]() == Symbol.Empty) {
-                var symbol = gameData.playerRole == PlayerRole.Player1
+                
+                var newSymbol = gameData.playerRole == PlayerRole.Player1
                     ? Symbol.Player1
                     : Symbol.Player2;
+
+                var previousSymbol = self.field[r][c]();
+                
+                self.field[r][c](newSymbol);
 
                 var moveUrl = "game/move/" + gameData.gameId;
                 
@@ -112,10 +117,11 @@ var MultiFive = (function (ns) {
                     self.gameState(newGameState);
 
                     // adjust state on success
-                    self.field[r][c](symbol);
                     stateMachine.fire("move");
 
                 }).error(function (xhr, textStatus, errorThrown) {
+
+                    self.field[r][c](previousSymbol);
 
                     console.error(xhr);
                     console.error(textStatus);
