@@ -86,9 +86,15 @@ namespace MultiFive.Web.Controllers
         }
 
         [Authorize]
-        public JsonResult Move()
+        public JsonResult Move(Guid gameId, int row, int col)
         {
-            throw new NotImplementedException("Implement Move action and do not forget to set game.StateNumber"); 
+            var game = GetGame(gameId);
+
+            game.Move(_player, 1, 1);
+
+            _repository.Save();
+
+            return Json( game.CurrentState.ToString(), JsonRequestBehavior.AllowGet );
         }
 
         private Game GetGame(Guid gameId)

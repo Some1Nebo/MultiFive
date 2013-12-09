@@ -61,16 +61,12 @@ var MultiFive = (function (ns) {
 
         self.gameState = ko.observable(gameData.gameState);
 
-        function chooseCssFor(state) {
-            return self.gameState() == state ? "playerActive" : null;
-        }
-
         self.player1Active = ko.computed(function () {
-            return chooseCssFor(GameState.Player1Move);
+            return self.gameState() == GameState.Player1Move;
         });
 
         self.player2Active = ko.computed(function () {
-            return chooseCssFor(GameState.Player2Move);
+            return self.gameState() == GameState.Player2Move;
         });
 
         // State machine setup
@@ -99,10 +95,32 @@ var MultiFive = (function (ns) {
                     ? Symbol.Player1
                     : Symbol.Player2;
 
-                self.field[r][c](symbol);
-                stateMachine.fire("move");
-
+                var moveUrl = "game/move/" + gameData.gameId;
+                
                 // send ajax to server
+                $.ajax({
+                    url: moveUrl,
+                    data: {
+                        gameId: gameData.gameId,
+                        row: r,
+                        col: c
+                    },
+                    cache: false
+                }).success(function (newGameState) {
+
+                    self.gameState(newGameState);
+
+                    // adjust state on success
+                    self.field[r][c](symbol);
+                    stateMachine.fire("move");
+
+                }).error(function (xhr, textStatus, errorThrown) {
+
+                    console.error(xhr);
+                    console.error(textStatus);
+                    console.error(errorThrown);
+
+                });
             }
 
         };
@@ -117,7 +135,6 @@ var MultiFive = (function (ns) {
         });
 
         var chooseState = function () {
-            // not the cleanest condition, but avoids some code-repetition
             return (
                     ((gameData.playerRole == PlayerRole.Player1) && self.player1Active()) ||
                     ((gameData.playerRole == PlayerRole.Player2) && self.player2Active())

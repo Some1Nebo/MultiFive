@@ -201,7 +201,7 @@ namespace MultiFive.Domain
 
         private Outcome? GetGameOutcome()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         private void TryMarkCell(int row, int column, Cell cellValue)
