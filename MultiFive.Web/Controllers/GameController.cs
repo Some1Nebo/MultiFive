@@ -41,28 +41,23 @@ namespace MultiFive.Web.Controllers
         {
             var game = GetGame(gameId);
 
-            GameSnapshot snapshot = _repository.GameSnapshots
-                                        .Include(s => s.Game)
-                                        .Include(s => s.LastMessage)
-                                        .FirstOrDefault(s => s.Game.Id == game.Id)
-                                    ?? new GameSnapshot(game);
+            var snapshot = GetGameSnapshot(game);
 
-            ViewBag.PlayerRole = PlayerRole.Spectator;
+            var playerRole = GetPlayerRole(game, _player);
 
-            if (_player.Id == game.Player1.Id)
-                ViewBag.PlayerRole = PlayerRole.Player1;
+            ViewBag.PlayerRole = playerRole;
 
             if (game.Player2 == null)
             {
-                if (_player.Id != game.Player1.Id)
+                if (playerRole == PlayerRole.Spectator)
                 {
-                    ViewBag.PlayerRole = PlayerRole.Player2;
+                    ViewBag.PlayerRole = playerRole = PlayerRole.Player2;
 
                     game.Lock(_player); // player1 chosen as first
 
                     var playerName = string.Format("Player {0}", _player.Id);
 
-                    var message = _messageFactory.CreateJoinedMessage(gameId, playerName, game.CurrentState.ToString());
+                    var message = _messageFactory.CreateJoinedMessage(gameId, playerName, game.CurrentState);
                     _repository.AddMessage(message);
 
                     snapshot = new GameSnapshot(game, message);
@@ -89,12 +84,39 @@ namespace MultiFive.Web.Controllers
         public JsonResult Move(Guid gameId, int row, int col)
         {
             var game = GetGame(gameId);
+            var snapshot = GetGameSnapshot(game);
 
             game.Move(_player, 1, 1);
+
+            PlayerRole playerRole = GetPlayerRole(game, _player);
+
+            var message = _messageFactory.CreateMovedMessage(gameId, playerRole, row, col, game.CurrentState);
+            _repository.AddMessage(message);
+
+            _repository.UpdateGameSnapshot(snapshot);
 
             _repository.Save();
 
             return Json( game.CurrentState.ToString(), JsonRequestBehavior.AllowGet );
+        }
+
+        private GameSnapshot GetGameSnapshot(Game game)
+        {
+            return _repository.GameSnapshots
+                .Include(s => s.Game)
+                .Include(s => s.LastMessage)
+                .FirstOrDefault(s => s.Game.Id == game.Id)
+                   ?? new GameSnapshot(game);
+        }
+
+        private static PlayerRole GetPlayerRole(Game game, Player player)
+        {
+            if (game.Player1 != null && player.Id == game.Player1.Id)
+                return PlayerRole.Player1;
+            else if (game.Player2 != null && player.Id == game.Player2.Id)
+                return PlayerRole.Player2;
+            else
+                return PlayerRole.Spectator;
         }
 
         private Game GetGame(Guid gameId)

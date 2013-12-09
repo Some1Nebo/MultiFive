@@ -66,6 +66,7 @@ var MultiFive = (function (ns) {
         });
 
         self.player2Active = ko.computed(function () {
+            console.log(self.gameState());
             return self.gameState() == GameState.Player2Move;
         });
 
@@ -162,7 +163,21 @@ var MultiFive = (function (ns) {
             stateMachine.fire("lock");
             
         };
-        
+
+        messageHub.hooks.moved = function (messageData) {
+            
+            if (messageData.playerRole == PlayerRole.Player1) {
+                self.field[messageData.row][messageData.col](Symbol.Player1);
+            }
+            else if (messageData.playerRole == PlayerRole.Player2) {
+                self.field[messageData.row][messageData.col](Symbol.Player2);
+            }
+            
+            self.gameState(messageData.gameState);
+            
+            stateMachine.fire("move");
+        };
+
         ko.applyBindings(self);
        
         messageHub.listen();
