@@ -60,6 +60,9 @@ namespace MultiFive.Domain
             if (player1 == null) 
                 throw new ArgumentNullException("player1");
 
+            if (width < 0 || height < 0)
+                throw new ArgumentException("Invalid size of the game field.");
+
             Id = Guid.NewGuid();
             Player1 = player1;
             Player2 = null;
@@ -105,16 +108,6 @@ namespace MultiFive.Domain
 
                 // TODO: refactor this hack, done for entityframework to pick-up changes before saving
                 FieldData = FieldData.ToArray();
-            }
-        }
-
-        public bool IsGameOver
-        {
-            get
-            {
-                return CurrentState == State.Draw
-                    || CurrentState == State.Player1Win
-                    || CurrentState == State.Player2Win;
             }
         }
 
@@ -243,6 +236,9 @@ namespace MultiFive.Domain
                 rowIdx += dr;
                 colIdx += dc;
 
+                if (OutOfField(rowIdx, colIdx))
+                    break; 
+
                 if (this[rowIdx, colIdx] == cellOwner)
                     currLength += 1;
                 else
@@ -250,6 +246,11 @@ namespace MultiFive.Domain
             }
 
             return currLength; 
+        }
+
+        private bool OutOfField(int rowIdx, int colIdx)
+        {
+            return (rowIdx < 0 || rowIdx > Width - 1 || colIdx < 0  || colIdx > Width - 1);
         }
     }
 }
