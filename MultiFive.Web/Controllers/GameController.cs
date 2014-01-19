@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data.Entity;
-using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
 using MultiFive.Web.Models;
@@ -39,9 +37,9 @@ namespace MultiFive.Web.Controllers
         [Authorize]
         public ActionResult Show(Guid gameId)
         {
-            var game = GetGame(gameId);
+            var game = _repository.GetGame(gameId);
 
-            var snapshot = GetGameSnapshot(game);
+            var snapshot = _repository.GetGameSnapshot(game);
 
             var playerRole = GetPlayerRole(game, _player);
 
@@ -80,33 +78,32 @@ namespace MultiFive.Web.Controllers
             return View(snapshot);
         }
 
+        static readonly object MoveLock = new object();
+
         [Authorize]
         public JsonResult Move(Guid gameId, int row, int col)
         {
-            var game = GetGame(gameId);
-            var snapshot = GetGameSnapshot(game);
+            lock (MoveLock)
+            {
+                var game = _repository.GetGame(gameId);
+                var snapshot = _repository.GetGameSnapshot(game);
 
-            game.Move(_player, row, col);
+                game.Move(_player, row, col);
 
-            PlayerRole playerRole = GetPlayerRole(game, _player);
+                PlayerRole playerRole = GetPlayerRole(game, _player);
 
-            var message = _messageFactory.CreateMovedMessage(gameId, playerRole, row, col, game.CurrentState);
-            _repository.AddMessage(message);
+                var message = _messageFactory.CreateMovedMessage(gameId, playerRole, row, col, game.CurrentState);
+                _repository.AddMessage(message);
 
-            snapshot.LastMessage = message;
+                snapshot.LastMessage = message;
 
-            _repository.Save();
+                // uncomment the following line to reproduce delay behavior locally
+                //Thread.Sleep(TimeSpan.FromSeconds(2));
+                
+                _repository.Save();
 
-            return Json( game.CurrentState.ToString(), JsonRequestBehavior.AllowGet );
-        }
-
-        private GameSnapshot GetGameSnapshot(Game game)
-        {
-            return _repository.GameSnapshots
-                .Include(s => s.Game)
-                .Include(s => s.LastMessage)
-                .FirstOrDefault(s => s.Game.Id == game.Id)
-                   ?? new GameSnapshot(game);
+                return Json(game.CurrentState.ToString(), JsonRequestBehavior.AllowGet);
+            }
         }
 
         private static PlayerRole GetPlayerRole(Game game, Player player)
@@ -117,22 +114,6 @@ namespace MultiFive.Web.Controllers
                 return PlayerRole.Player2;
             else
                 return PlayerRole.Spectator;
-        }
-
-        private Game GetGame(Guid gameId)
-        {
-            var game = _repository.Games
-                .Include(g => g.Player1)
-                .Include(g => g.Player2)
-                .FirstOrDefault(g => g.Id == gameId);
-
-            if (game == null)
-            {
-                string msg = string.Format("Game with id {0} is not found.", gameId);
-                throw new ApplicationException(msg);
-            }
-
-            return game; 
         }
 	}
 }
