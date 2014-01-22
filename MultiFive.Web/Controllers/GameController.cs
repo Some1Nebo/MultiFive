@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using MultiFive.Web.Models;
 using WebHelpers = System.Web.Helpers;
@@ -16,7 +18,7 @@ namespace MultiFive.Web.Controllers
         private readonly IMessageFactory _messageFactory;
 
         private const int DefaultWidth = 10;
-        private const int DefaultHeight = 10; 
+        private const int DefaultHeight = 10;
 
         public GameController(IPrincipal user, IRepository repository, IMessageFactory messageFactory)
         {
@@ -41,7 +43,7 @@ namespace MultiFive.Web.Controllers
 
             var snapshot = _repository.GetGameSnapshot(game);
 
-            var playerRole = GetPlayerRole(game, _player);
+            var playerRole = game.GetPlayerRole(_player);
 
             ViewBag.PlayerRole = playerRole;
 
@@ -78,42 +80,46 @@ namespace MultiFive.Web.Controllers
             return View(snapshot);
         }
 
-        static readonly object MoveLock = new object();
+        // Below is proof of concept of delayed synchronized Move execution per game
+
+        // TODO: remove inactive games from collection to avoid eventual memory overflow
+        static readonly ConcurrentDictionary<Guid, Task> MoveRequests = new ConcurrentDictionary<Guid, Task>();
 
         [Authorize]
-        public JsonResult Move(Guid gameId, int row, int col)
+        public void Move(Guid gameId, int row, int col)
         {
-            lock (MoveLock)
+            // TODO: exceptions in following invocation are silently lost, so we need a way to log and show them.
+
+            Action move = () =>
             {
-                var game = _repository.GetGame(gameId);
-                var snapshot = _repository.GetGameSnapshot(game);
+                /* 
+                 * Here instance members are out of lifetime scope setup by Autofac because of delayed invocation
+                 * TODO: use ServiceLocator to instantiate them?
+                 */
+                using (var repository = new EFRepository(new ApplicationDbContext()))
+                {
+                    var messageFactory = new JsonMessageFactory();
 
-                game.Move(_player, row, col);
+                    var game = repository.GetGame(gameId);
+                    var snapshot = repository.GetGameSnapshot(game);
 
-                PlayerRole playerRole = GetPlayerRole(game, _player);
+                    game.Move(_player, row, col);
 
-                var message = _messageFactory.CreateMovedMessage(gameId, playerRole, row, col, game.CurrentState);
-                _repository.AddMessage(message);
+                    PlayerRole playerRole = game.GetPlayerRole(_player);
 
-                snapshot.LastMessage = message;
+                    var message = messageFactory.CreateMovedMessage(gameId,
+                        playerRole, row, col, game.CurrentState);
+                    repository.AddMessage(message);
 
-                // uncomment the following line to reproduce delay behavior locally
-                //Thread.Sleep(TimeSpan.FromSeconds(2));
-                
-                _repository.Save();
+                    snapshot.LastMessage = message;
 
-                return Json(game.CurrentState.ToString(), JsonRequestBehavior.AllowGet);
-            }
-        }
+                    repository.Save();
+                }
+            };
 
-        private static PlayerRole GetPlayerRole(Game game, Player player)
-        {
-            if (game.Player1 != null && player.Id == game.Player1.Id)
-                return PlayerRole.Player1;
-            else if (game.Player2 != null && player.Id == game.Player2.Id)
-                return PlayerRole.Player2;
-            else
-                return PlayerRole.Spectator;
+            MoveRequests.AddOrUpdate(gameId,
+                id => Task.Factory.StartNew(move), // on first call run for this gameId
+                (id, currentTask) => currentTask.ContinueWith(t => move())); // queue invocation for this gameId
         }
 	}
 }

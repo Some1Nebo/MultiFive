@@ -113,12 +113,10 @@ var MultiFive = (function (ns) {
                         col: c
                     },
                     cache: false
-                }).success(function (newGameState) {
-
-                    self.gameState(newGameState);
-
                 }).error(function (xhr, textStatus, errorThrown) {
 
+                    console.error("call failed, resetting move");
+                    
                     self.field[r][c](previousSymbol);
 
                     console.error(xhr);

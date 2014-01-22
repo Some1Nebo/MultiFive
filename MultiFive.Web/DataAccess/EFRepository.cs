@@ -9,7 +9,7 @@ using MultiFive.Web.Models.Messaging;
 
 namespace MultiFive.Web.DataAccess
 {
-    public class EFRepository: IRepository
+    public class EFRepository: IRepository, IDisposable
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -95,6 +95,11 @@ namespace MultiFive.Web.DataAccess
         public void AddGameSnapshot(GameSnapshot gameSnapshot)
         {
             _dbContext.GameSnapshots.Add(gameSnapshot);
+        }
+
+        public void Dispose()
+        {
+            _dbContext.Dispose();
         }
     }
 }

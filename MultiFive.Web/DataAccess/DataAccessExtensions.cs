@@ -45,5 +45,16 @@ namespace MultiFive.Web.DataAccess
                 .FirstOrDefault(s => s.Game.Id == game.Id)
                    ?? new GameSnapshot(game);
         }
+
+        public static PlayerRole GetPlayerRole(this Game game, Player player)
+        {
+            if (game.Player1 != null && player.Id == game.Player1.Id)
+                return PlayerRole.Player1;
+            else if (game.Player2 != null && player.Id == game.Player2.Id)
+                return PlayerRole.Player2;
+            else
+                return PlayerRole.Spectator;
+        }
+
     }
 }
